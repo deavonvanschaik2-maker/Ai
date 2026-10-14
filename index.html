@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Switchboard — AI tools for any AI</title>
+<meta name="description" content="60+ AI tools that run on the AI you choose: Claude, OpenAI, Gemini, Mistral, Groq, Ollama and any custom endpoint. Bring your own keys.">
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#15171f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Switchboard"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2315171f'/%3E%3Ccircle cx='10' cy='11' r='3' fill='%239bbcff'/%3E%3Ccircle cx='22' cy='11' r='3' fill='%23ff9ec7'/%3E%3Ccircle cx='10' cy='22' r='3' fill='%237de0a6'/%3E%3Ccircle cx='22' cy='22' r='3' fill='%23ffd166'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Newsreader:opsz,wght@6..72,400;6..72,600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef0f4;--panel:#fff;--ink:#15171f;--mute:#5d6270;--line:#d9dde6;--accent:#15171f;--accink:#fff;
+--chat:#9bbcff;--write:#ff9ec7;--create:#c3a2ff;--code:#7de0a6;--learn:#ffd166;--life:#6fd8e0;--play:#ff9a76;--mine:#d3d8e6;
+--ui:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;--read:Newsreader,Georgia,"Times New Roman",serif;--mono:ui-monospace,Menlo,Consolas,monospace;
+--notch:18px 18px 18px 4px;box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1016;--panel:#171a23;--ink:#eceef5;--mute:#9aa0b0;--line:#272b38;--accent:#eceef5;--accink:#0e1016}}
+:root[data-theme="dark"]{--bg:#0e1016;--panel:#171a23;--ink:#eceef5;--mute:#9aa0b0;--line:#272b38;--accent:#eceef5;--accink:#0e1016}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);line-height:1.45;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+[data-c=chat]{--c:var(--chat)}[data-c=write]{--c:var(--write)}[data-c=create]{--c:var(--create)}[data-c=code]{--c:var(--code)}[data-c=learn]{--c:var(--learn)}[data-c=life]{--c:var(--life)}[data-c=play]{--c:var(--play)}
+.app{display:grid;grid-template-columns:276px minmax(0,1fr);min-height:100vh}
+aside{position:sticky;top:0;height:100vh;overflow-y:auto;padding:18px 14px 24px;border-right:1px solid var(--line);background:var(--bg)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.35rem;letter-spacing:-.03em;text-decoration:none;color:var(--ink);margin:0 4px 14px}
+.brand svg{width:28px;height:28px}
+#q{width:100%;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:9px 12px;margin-bottom:12px}
+.gl{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.85rem;color:var(--mute);margin:14px 6px 4px}
+.gl i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+nav a{display:flex;gap:9px;align-items:center;padding:6px 8px;border-radius:9px;text-decoration:none;color:var(--ink);font-size:.93rem}
+nav a:hover{background:var(--panel)}
+nav a.on{background:var(--c);color:#15171f;font-weight:600}
+nav a .e{width:1.4em;text-align:center}
+main{padding:16px 28px 60px;max-width:1100px;width:100%}
+.top{display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-bottom:10px}
+.top .burger{display:none;margin-right:auto}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:11px;padding:7px 13px;font-size:.88rem}
+.btn:hover{border-color:var(--mute)}
+.btn.pri{background:var(--accent);color:var(--accink);border-color:var(--accent);font-weight:600}
+h1{font-size:clamp(2.3rem,6vw,4rem);line-height:.98;letter-spacing:-.035em;font-weight:800;margin:18px 0 10px;max-width:14ch}
+.lede{color:var(--mute);max-width:52ch;margin:0 0 20px;font-size:1.05rem}
+.banner{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:var(--notch);padding:14px 16px;margin-bottom:24px}
+.sec{margin:30px 0 12px;display:flex;align-items:center;gap:10px}
+.sec h2{font-size:1.25rem;margin:0;letter-spacing:-.02em}
+.sec i{width:26px;height:10px;border-radius:5px;background:var(--c)}
+.sec small{color:var(--mute)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.tile{display:flex;flex-direction:column;gap:3px;min-height:132px;padding:14px 14px 12px;background:var(--c);color:#15171f;text-decoration:none;border-radius:var(--notch);transition:transform .12s}
+.tile:hover{transform:translateY(-3px)}
+.tile .ti{font-size:1.8rem;line-height:1;margin-bottom:auto}
+.tile b{font-size:1.02rem}
+.tile small{font-size:.8rem;line-height:1.3;opacity:.78}
+.thead{display:flex;gap:14px;align-items:center;margin:8px 0 18px}
+.thead .big{width:58px;height:58px;border-radius:var(--notch);background:var(--c);display:grid;place-items:center;font-size:1.9rem;flex:none}
+.thead h1{font-size:1.9rem;margin:0;max-width:none;letter-spacing:-.03em;line-height:1.05}
+.thead p{margin:2px 0 0;color:var(--mute)}
+.thead .sp{flex:1}
+.work{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:18px;align-items:start}
+.form{display:flex;flex-direction:column;gap:12px;position:sticky;top:12px}
+.fld{display:flex;flex-direction:column;gap:5px;font-size:.88rem;font-weight:600}
+.fld input,.fld textarea,.fld select,.compose textarea,.refine input{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:10px 12px;font-weight:400;font-size:.95rem;width:100%}
+.fld textarea{resize:vertical;min-height:110px}
+.run{background:var(--accent);color:var(--accink);border:0;border-radius:12px;padding:12px 20px;font-weight:700}
+.run.stop{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+.out{background:var(--panel);border:1px solid var(--line);border-radius:var(--notch);padding:18px;min-height:260px;min-width:0}
+.empty{color:var(--mute);padding:40px 10px;text-align:center}
+.prose{font-family:var(--read);font-size:1.07rem;line-height:1.65;overflow-wrap:anywhere}
+.prose>:first-child{margin-top:0}.prose>:last-child{margin-bottom:0}
+.prose h2,.prose h3,.prose h4,.prose h5{font-family:var(--ui);letter-spacing:-.02em;line-height:1.2;margin:1.3em 0 .4em}
+.prose h2{font-size:1.4rem}.prose h3{font-size:1.2rem}.prose h4,.prose h5{font-size:1.05rem}
+.prose p{margin:.7em 0}.prose ul,.prose ol{padding-left:1.3em}.prose li{margin:.25em 0}
+.prose blockquote{margin:.8em 0;padding:.1em 1em;border-left:3px solid var(--line);color:var(--mute)}
+.prose pre{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;overflow-x:auto;font:.84rem/1.5 var(--mono)}
+.prose code{font:.88em var(--mono);background:var(--bg);padding:.1em .35em;border-radius:5px}.prose pre code{background:none;padding:0}
+.prose a{color:inherit;text-underline-offset:3px}
+.prose hr{border:0;border-top:1px solid var(--line);margin:1.4em 0}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.refine{display:flex;gap:8px;margin-top:12px}
+.err{background:color-mix(in srgb,#e5484d 14%,var(--panel));border:1px solid #e5484d;border-radius:12px;padding:10px 13px;margin:10px 0;font-size:.92rem}
+.pic{display:block;max-width:100%;max-height:70vh;margin:0 auto;border-radius:10px}
+.frame{width:100%;height:520px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.tabs{display:flex;gap:6px;margin-bottom:10px}.tabs .on{background:var(--accent);color:var(--accink)}
+.stream{font:.8rem/1.4 var(--mono);color:var(--mute);white-space:pre-wrap;max-height:220px;overflow:hidden}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.fc{min-height:120px;text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:14px 14px 14px 4px;padding:14px;font-family:var(--read);font-size:1.02rem}
+.fc .a{display:none}.fc.flip{background:var(--learn);color:#15171f;border-color:transparent}.fc.flip .q{display:none}.fc.flip .a{display:block}
+.thread{display:flex;flex-direction:column;gap:12px;min-height:200px;padding-bottom:10px}
+.b{max-width:min(46rem,92%);padding:11px 15px}
+.b.u{align-self:flex-end;background:var(--accent);color:var(--accink);border-radius:16px 16px 4px 16px;white-space:pre-wrap}
+.b.a{align-self:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:16px 16px 16px 4px}
+.dots{display:inline-flex;gap:4px}.dots i{width:7px;height:7px;border-radius:50%;background:var(--mute);animation:bl 1s infinite}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes bl{50%{opacity:.25}}
+.setup{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.compose{display:flex;gap:8px;position:sticky;bottom:0;background:var(--bg);padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px));align-items:flex-end}
+.compose textarea{resize:none;max-height:140px}
+dialog{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:var(--notch);width:calc(100% - 28px);max-width:460px;padding:22px}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog h2{margin:0 0 6px;font-size:1.4rem;letter-spacing:-.02em}
+dialog p{color:var(--mute);font-size:.9rem;margin:6px 0 14px}
+dialog .fld{margin-bottom:12px}
+.row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:12px;font-size:.88rem;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
+.toast.on{opacity:1}
+.scrim{display:none}
+@media(max-width:860px){
+ .app{grid-template-columns:1fr}
+ aside{position:fixed;inset:0 auto 0 0;width:min(310px,86vw);z-index:30;transform:translateX(-100%);transition:transform .2s;box-shadow:0 0 40px rgba(0,0,0,.3)}
+ body.nav aside{transform:none}
+ body.nav .scrim{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:25}
+ .top .burger{display:inline-block}
+ main{padding:12px 14px 50px}
+ .work{grid-template-columns:1fr}.form{position:static}
+ .frame{height:420px}
+}
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:20px}
+.col{background:var(--panel);border:1px solid var(--line);border-radius:var(--notch);padding:16px;min-width:0}
+.col h3{margin:0 0 8px;font-size:1rem}.col h3 small{display:block;color:var(--mute);font-weight:400;font-size:.78rem}
+.col .prose{font-size:1rem}
+.chk{display:flex;flex-wrap:wrap;gap:8px}.chk label{display:flex;gap:6px;align-items:center;border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:6px 10px;font-weight:400;font-size:.9rem}.chk small{color:var(--mute)}
+.chk1{display:flex;gap:8px;align-items:center;font-size:.92rem}
+.via{color:var(--mute);font-size:.8rem;margin:12px 0 0}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--line);display:inline-block;flex:none}.dot.on{background:#2fb673}
+details.pv{border:1px solid var(--line);border-radius:12px;margin-bottom:8px;background:var(--bg)}
+details.pv summary{cursor:pointer;padding:10px 12px;display:flex;gap:8px;align-items:center;font-weight:600}
+details.pv summary small{color:var(--mute);font-weight:400;margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:45%}
+details.pv .pf{padding:2px 12px 12px;display:grid;gap:10px}
+.pf .fld input,.pf .fld select{width:100%}
+#plist{max-height:52vh;overflow:auto;margin:10px 0}
+dialog.wide{max-width:600px}
+select#prov{max-width:210px}
+[data-c=mine]{--c:var(--mine)}
+.thead{flex-wrap:wrap}.thead select{max-width:170px}
+.adv{margin:-6px 0 16px;color:var(--mute);font-size:.9rem}.adv summary{cursor:pointer;width:max-content}
+.adv textarea{width:100%;margin-top:8px;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:10px 12px;color:var(--ink);font:inherit;font-size:.9rem}
+.hint{color:var(--mute);font-size:.82rem;margin:6px 0 0}
+.aux{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ib{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--panel);font-size:1.05rem;flex:none}
+.ib.rec,.btn.rec{background:#e5484d;color:#fff;border-color:#e5484d}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding-top:8px}
+.chip{display:flex;gap:6px;align-items:center;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:4px 10px;font-size:.84rem}
+.chip button{border:0;background:transparent;font-size:.9rem;padding:0 2px;color:var(--mute)}
+.chip img{width:24px;height:24px;object-fit:cover;border-radius:6px}
+.ba{display:flex;gap:4px;margin-top:8px}.ba button{border:0;background:transparent;color:var(--mute);font-size:.78rem;padding:2px 8px;border-radius:8px}.ba button:hover{background:var(--bg);color:var(--ink)}
+.th2{max-width:220px;max-height:170px;border-radius:8px;display:block;margin-bottom:6px}
+.tw{overflow-x:auto}.prose table{border-collapse:collapse;font:.92rem var(--ui);margin:.8em 0}.prose th,.prose td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}.prose th{background:var(--bg)}
+.prose pre{position:relative}.cp{position:absolute;top:6px;right:6px;border:1px solid var(--line);background:var(--panel);border-radius:8px;font:.72rem var(--ui);padding:2px 8px;color:var(--mute)}
+.recent{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.rc{display:flex;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:14px 14px 14px 4px;padding:10px 12px;min-width:0}
+.rc>span:last-child{min-width:0}.rc b{display:block;font-size:.92rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rc small{color:var(--mute)}
+.hs{width:100%;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.hi{display:flex;gap:8px;align-items:stretch;margin-bottom:8px}
+.hopen{flex:1;display:flex;gap:12px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:14px 14px 14px 4px;padding:10px 14px;min-width:0}
+.ht{min-width:0}.ht b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ht small{color:var(--mute)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.pgrid figure{margin:0}.pgrid img{width:100%;border-radius:12px;display:block}.pgrid figcaption{font-size:.8rem;color:var(--mute);margin:6px 0}
+#pal{max-width:580px;padding:0;overflow:hidden;margin-top:12vh}
+#pal input{width:100%;border:0;border-bottom:1px solid var(--line);background:transparent;padding:16px;font-size:1.05rem;outline:0;color:var(--ink)}
+#pl{max-height:50vh;overflow:auto;padding:6px}
+.pi{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:10px;text-decoration:none;color:var(--ink)}
+.pi small{color:var(--mute);margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:50%}.pi.on{background:var(--bg)}.pi .e{width:1.4em;text-align:center}
+.bld{display:grid;gap:14px;max-width:640px}.bld input,.bld select,.bld textarea{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:10px 12px;width:100%;font-weight:400}
+.fo{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:10px}.fo small{color:var(--mute)}
+.pgrid img{min-height:120px;background:var(--panel2,var(--bg))}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<noscript>This site needs JavaScript.</noscript>
+<div class="app">
+  <aside>
+    <a class="brand" href="#/"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="currentColor"/><circle cx="10" cy="11" r="3" fill="#9bbcff"/><circle cx="22" cy="11" r="3" fill="#ff9ec7"/><circle cx="10" cy="22" r="3" fill="#7de0a6"/><circle cx="22" cy="22" r="3" fill="#ffd166"/></svg>Switchboard</a>
+    <input id="q" type="search" placeholder="Search tools  (/ or Ctrl+K)" aria-label="Search tools" autocomplete="off">
+    <nav id="nav"></nav>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+  <main>
+    <div class="top">
+      <button class="btn burger" id="burger" aria-label="Open menu">☰ Tools</button>
+      <button class="btn" id="install" hidden>Install app</button>
+      <button class="btn" id="palBtn" title="Jump to anything (Ctrl+K)">⌘K</button>
+      <select class="btn" id="prov" aria-label="Active AI" hidden></select>
+      <button class="btn" id="theme" aria-label="Toggle light or dark theme">◐</button>
+      <button class="btn" id="setBtn">Settings</button>
+    </div>
+    <div id="view"></div>
+  </main>
+</div>
+
+<dialog id="dlg" class="wide">
+  <h2>AI keys</h2>
+  <p>Add a key for any provider, or point a custom entry at your own endpoint URL. Keys are saved only in this browser and sent only to that provider. Model names change often, so use <b>Fetch models</b> to see what your key can use.</p>
+  <div id="plist"></div>
+  <div class="row" style="justify-content:space-between"><button class="btn" id="addC" type="button">+ Add custom endpoint</button><span style="display:flex;gap:8px"><button class="btn" id="cancel" type="button">Close</button><button class="btn pri" id="saveSet" type="button">Save</button></span></div>
+</dialog>
+<dialog id="pal"><input id="pq" type="search" placeholder="Jump to a tool or page…" aria-label="Jump to" autocomplete="off"><div id="pl"></div></dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const fill=(s,v)=>(s||"").replace(/\{(\w+)\}/g,(m,k)=>v[k]??"");
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),2200)}
+const NATIVE=()=>!!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform()&&Capacitor.Plugins&&Capacitor.Plugins.Filesystem&&Capacitor.Plugins.Share);
+async function nativeSave(name,blob){const X=Capacitor.Plugins,b64=await new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(",")[1]);r.onerror=no;r.readAsDataURL(blob)});
+  const w=await X.Filesystem.writeFile({path:name,data:b64,directory:"CACHE"});await X.Share.share({title:name,url:w.uri})}
+function saveFile(name,blob){if(NATIVE()){nativeSave(name,blob).catch(e=>{if(!(e&&/cancel|dismiss/i.test(e.message||"")))toast("Couldn't share the file")});return}if(DL){DL.save({filename:name,data:blob}).catch(e=>{if(e&&e.code!=="declined")toast("Download isn't available here")});return}const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}
+function inline(s){return esc(s).replace(/`([^`]+)`/g,"<code>$1</code>").replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>").replace(/(^|[^*])\*([^*\n]+)\*/g,"$1<i>$2</i>").replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')}
+function blocks(p){const L=p.split("\n");let h="",list=null,m,i=0;const close=()=>{if(list){h+="</"+list+">";list=null}};
+  const row=/^\s*\|.*\|\s*$/,sep=/^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/,cells=r=>r.trim().replace(/^\||\|$/g,"").split("|").map(c=>inline(c.trim()));
+  for(;i<L.length;i++){const l=L[i];
+    if(row.test(l)&&i+1<L.length&&sep.test(L[i+1])){close();const hd=cells(l),rows=[];i+=2;while(i<L.length&&row.test(L[i])){rows.push(cells(L[i]));i++}i--;
+      h+='<div class="tw"><table><thead><tr>'+hd.map(c=>"<th>"+c+"</th>").join("")+"</tr></thead><tbody>"+rows.map(r=>"<tr>"+r.map(c=>"<td>"+c+"</td>").join("")+"</tr>").join("")+"</tbody></table></div>";continue}
+    if(m=l.match(/^(#{1,4})\s+(.*)/)){close();const n=m[1].length+1;h+=`<h${n}>${inline(m[2])}</h${n}>`}
+    else if(m=l.match(/^\s*[-*•]\s+(.*)/)){if(list!=="ul"){close();h+="<ul>";list="ul"}h+="<li>"+inline(m[1])+"</li>"}
+    else if(m=l.match(/^\s*\d+[.)]\s+(.*)/)){if(list!=="ol"){close();h+="<ol>";list="ol"}h+="<li>"+inline(m[1])+"</li>"}
+    else if(m=l.match(/^>\s?(.*)/)){close();h+="<blockquote>"+inline(m[1])+"</blockquote>"}
+    else if(/^\s*(---+|\*\*\*+)\s*$/.test(l)){close();h+="<hr>"}
+    else if(!l.trim()){close()}
+    else{close();h+="<p>"+inline(l)+"</p>"}
+  }close();return h}
+function md(t){return t.split("```").map((p,i)=>{if(i%2){const nl=p.indexOf("\n");return '<pre><button class="cp" type="button">Copy</button><code>'+esc((nl<0?p:p.slice(nl+1)).replace(/\n$/,""))+"</code></pre>"}return blocks(p)}).join("")}
+function cleanSvg(s){s=s.replace(/<script[\s\S]*?<\/script>/gi,"").replace(/<foreignObject[\s\S]*?<\/foreignObject>/gi,"").replace(/\son\w+\s*=\s*("[^"]*"|'[^']*')/gi,"");if(!/xmlns=/.test(s))s=s.replace("<svg",'<svg xmlns="http://www.w3.org/2000/svg"');return s}
+const svgUrl=s=>URL.createObjectURL(new Blob([s],{type:"image/svg+xml"}));
+const getSvg=t=>{const m=t.match(/<svg[\s\S]*<\/svg>/i);return m?cleanSvg(m[0]):""};
+const getHtml=t=>{let m=t.match(/```(?:html)?\s*\n([\s\S]*?)```/i);if(m)return m[1];m=t.match(/<!doctype[\s\S]*|<html[\s\S]*/i);return m?m[0]:""};
+function getCards(t){try{const m=t.match(/\[[\s\S]*\]/);const a=JSON.parse(m[0]);return a.filter(c=>c&&c.q&&c.a)}catch(e){return null}}
+
+/* ---------- tool catalogue ---------- */
+const t=(k,l,p)=>({k,l,t:"text",p}),a=(k,l,p)=>({k,l,t:"area",p}),s=(k,l,o)=>({k,l,t:"sel",o});
+const BASE="You are a skilled, precise assistant. Use Markdown when it helps. Be direct, no filler.";
+const SVG="You are an expert SVG illustrator. Reply with ONE complete <svg> element and nothing else: no markdown fences, no commentary. Set viewBox to the requested canvas. Make it polished: full-bleed background, layered shapes, gradients, harmonious palette, clear focal point. No scripts, no external images or fonts.";
+const WEB="You are a front-end designer. Reply with ONE complete, self-contained HTML document (inline CSS and JS, no external resources) inside a single ```html fenced block and no other text. Make it responsive, polished and functional.";
+const STYLES=["Flat illustration","Watercolor","Neon synthwave","Minimal line art","Paper cut","Retro poster","Isometric 3D","Cosmic gradient","Ink and wash"];
+const LEVELS=["Beginner","Intermediate","Advanced"];
+const T=(id,i,n,c,d,o)=>({id,i,n,c,d,k:"text",sys:BASE,f:[],...o});
+const TOOLS=[
+/* chat */
+T("assistant","💬","Assistant","chat","Ask anything. Get a straight answer.",{k:"chat",hello:"What do you want to work on?"}),
+T("socrates","🏛️","Socratic tutor","chat","Learns with you by asking questions, not lecturing.",{k:"chat",sys:"You are a Socratic tutor. Guide the learner with short, pointed questions and small hints instead of full answers. Confirm correct reasoning, gently probe mistakes, and summarize once they get there.",hello:"What topic or problem should we dig into?"}),
+T("mentor","🧑‍💻","Code mentor","chat","A patient senior engineer on call.",{k:"chat",sys:"You are a patient senior software engineer mentoring the user. Explain the why, show small runnable examples, and point out pitfalls. Ask about their stack when it matters.",hello:"What are you building or stuck on?"}),
+T("coach","🎯","Life coach","chat","Sort out goals and pick next steps.",{k:"chat",sys:"You are a practical, warm coach. Ask one clarifying question at a time, reflect back what you hear, and end with 1 to 3 concrete next actions. You are not a therapist; suggest professional help for serious distress.",hello:"What's on your mind?"}),
+T("debate","⚔️","Debate partner","chat","Argue any topic against a sharp opponent.",{k:"chat",f:[t("topic","Topic","Cities should ban cars"),s("side","You argue",["For","Against"])],sys:"You are a sharp, respectful debate opponent. Topic: {topic}. The user argues {side}; you argue the opposite. Make strong concise points, rebut theirs, and keep each turn under 150 words.",hello:"Set a topic and your side, then make your opening argument."}),
+T("language","🗣️","Language partner","chat","Practice a language with gentle corrections.",{k:"chat",f:[t("language","Language","Spanish"),s("level","Your level",LEVELS)],sys:"You are a friendly {language} conversation partner for a {level} learner. Reply mainly in {language} at that level, add short English glosses in parentheses for harder words, and end with a brief 'Fix:' line correcting any mistakes.",hello:"Say hello in your target language to begin."}),
+T("interview","🎤","Mock interviewer","chat","Practice an interview and get feedback.",{k:"chat",f:[t("role","Role you're interviewing for","Product designer")],sys:"You are an interviewer for the role: {role}. Ask one question at a time. After each answer give brief feedback (one strength, one improvement) before the next question.",hello:"Enter the role above, then say 'ready' to start."}),
+/* write */
+T("email","✉️","Email writer","write","Turn a few notes into a clear email.",{sys:"You write clear, well-structured emails. Output a subject line then the body, nothing else.",f:[t("to","Who is it to?","My manager"),a("notes","What should it say?","Key points, dates, asks…"),s("tone","Tone",["Friendly","Professional","Direct","Apologetic","Persuasive"])],tpl:"Write an email to {to}.\nTone: {tone}.\nPoints to cover:\n{notes}"}),
+T("rewrite","✍️","Rewriter","write","Make any text clearer, shorter or different in tone.",{f:[a("text","Your text","Paste text here…"),s("how","Make it",["Clearer","Shorter","More formal","More casual","More persuasive","Simpler (age 10)"])],tpl:"Rewrite this to be: {how}. Keep the meaning. Return only the rewrite.\n\n{text}"}),
+T("proof","🔍","Proofreader","write","Fix spelling, grammar and punctuation.",{f:[a("text","Your text","Paste text here…")],tpl:"Fix spelling, grammar and punctuation. Give the corrected text first, then a short bullet list of the main changes.\n\n{text}"}),
+T("summarize","📄","Summarizer","write","Boil long text down to what matters.",{f:[a("text","Text to summarize","Paste an article, notes or a transcript…"),s("len","Format",["3 bullets","One paragraph","Detailed outline","One sentence"])],tpl:"Summarize the text below as: {len}. Be faithful; add nothing new.\n\n{text}"}),
+T("translate","🌍","Translator","write","Natural translation, not word-for-word.",{f:[a("text","Text","Hello, how are you?"),t("to","Translate into","Spanish")],tpl:"Translate into {to}. Make it natural, not literal. Give the translation, then one short line noting any tricky phrasing.\n\n{text}"}),
+T("post","📝","Post writer","write","Blog posts, newsletters, threads and more.",{f:[a("topic","Topic and key points","What should it be about?"),s("fmt","Format",["Blog post","LinkedIn post","Newsletter","X thread","Product description"]),t("aud","Audience","Busy founders"),s("tone","Tone",["Conversational","Authoritative","Playful","Inspirational"])],tpl:"Write a {fmt} for {aud}. Tone: {tone}.\nTopic and points:\n{topic}"}),
+T("cover","💼","Cover letter","write","A tailored letter from your background and the job.",{f:[t("role","Role and company","Data analyst at Acme"),a("bg","Your background","Experience, skills, wins…"),a("jd","Job description (optional)","Paste the posting…")],tpl:"Write a concise, specific cover letter (under 300 words) for: {role}.\nMy background:\n{bg}\nJob description:\n{jd}"}),
+T("captions","📱","Caption ideas","write","Eight captions with hashtags, varied in tone.",{f:[a("about","What is the post about?","A sunrise hike with friends"),s("pl","Platform",["Instagram","TikTok","LinkedIn","X"])],tpl:"Give 8 caption options for a {pl} post about: {about}. Vary the tone (funny, sincere, short, punchy). Add fitting hashtags."}),
+T("prompt","🪄","Prompt improver","write","Turn a rough prompt into a strong one.",{f:[a("p","Your rough prompt","make a poster for my cafe"),s("target","Written for",["Any chatbot","Image generator","Coding assistant"])],tpl:"Rewrite this as a much better prompt for: {target}. Add useful specifics, structure and constraints. Show the improved prompt in a code block, then list what you changed.\n\nRough prompt: {p}"}),
+/* create */
+T("image","🎨","Image studio","create","Describe a picture, get vector art.",{k:"svg",max:7000,sys:SVG,f:[a("idea","Describe the image","A fox sleeping on a crescent moon above a quiet city"),s("style","Style",STYLES),s("size","Canvas",["512x512 square","704x396 landscape","396x704 portrait"])],tpl:"Create this image: {idea}\nStyle: {style}.\nCanvas: {size}."}),
+T("logo","🔷","Logo maker","create","Clean, scalable logos as SVG.",{k:"svg",max:6000,sys:SVG+" Design a clean, scalable logo with simple shapes. Text is allowed for the brand name using generic font families.",f:[t("name","Brand name","Northwind"),a("about","What do they do?","A small coffee roaster"),s("st","Style",["Minimal geometric","Playful","Badge or emblem","Monogram","Wordmark"])],tpl:"Design a logo for {name}: {about}. Style: {st}. Canvas: 512x512."}),
+T("pattern","🌀","Pattern maker","create","Seamless-feeling patterns and wallpapers.",{k:"svg",max:6000,sys:SVG+" Compose a repeating-looking pattern using <pattern> or a clear grid of motifs.",f:[a("vibe","Mood or theme","Art deco, gold on navy"),t("pal","Colors (optional)","navy, gold, cream")],tpl:"Create a pattern. Theme: {vibe}. Colors: {pal}. Canvas: 512x512."}),
+T("story","📖","Story writer","create","Short fiction from a premise.",{sys:"You are a gifted fiction writer. Show, don't tell. Strong opening, specific detail, a real ending. Output the story with a title.",f:[a("premise","Premise","A lighthouse keeper who can hear the sea talk"),s("genre","Genre",["Literary","Fantasy","Sci-fi","Mystery","Horror","Comedy","Romance"]),s("len","Length",["Flash (300 words)","Short (800 words)","Long (1500 words)"])],tpl:"Write a {genre} story. Length: {len}.\nPremise: {premise}"}),
+T("poem","✒️","Poem and lyrics","create","Original verse in the form you pick.",{sys:"You write original, vivid poetry and lyrics. Never copy existing works.",f:[a("about","About","Moving to a new city"),s("form","Form",["Free verse","Sonnet","Haiku set","Rhyming song","Rap verse","Limerick"])],tpl:"Write an original {form} about: {about}"}),
+T("names","💡","Name generator","create","Names for businesses, pets, characters and more.",{f:[s("what","Name for a",["Business","Product","App","Pet","Fantasy character","Band"]),a("about","Tell me about it","Vibe, audience, keywords…")],tpl:"Suggest 15 names for a {what}. Group them by vibe, with a one-line reason each.\nAbout it: {about}"}),
+T("brain","🧠","Brainstormer","create","Lots of ideas: safe, wild and low-effort.",{f:[a("topic","What do you need ideas for?","Ways to get my first 100 users"),s("n","How many",["10 ideas","20 ideas"])],tpl:"Give {n} for: {topic}. Label each as Safe, Wild or Low-effort, and add a one-line first step."}),
+/* code */
+T("code","⌨️","Code writer","code","Describe it. Get working code.",{sys:"You are an expert programmer. Give correct, idiomatic, commented code in fenced blocks, then a brief explanation of how to run it.",f:[t("lang","Language","Python"),a("task","What should it do?","Describe inputs, outputs, edge cases…")],tpl:"Write {lang} code for:\n{task}"}),
+T("explain","🔬","Code explainer","code","Understand any snippet, line by line.",{f:[a("code","Code","Paste code…"),s("lvl","Explain for",LEVELS)],tpl:"Explain what this code does for a {lvl} programmer. Give an overview, then walk through the key parts.\n\n```\n{code}\n```"}),
+T("debug","🐞","Debugger","code","Find the bug and get a fix.",{f:[a("code","Code","Paste code…"),a("err","Error or what goes wrong","TypeError: …")],tpl:"Find the bug(s). Explain the cause, then show the corrected code.\n\nCode:\n```\n{code}\n```\nProblem:\n{err}"}),
+T("regex","🔣","Regex builder","code","Describe a pattern, get a tested regex.",{f:[a("what","What should it match?","Dates like 2026-10-13 but not 2026-13-45"),s("fl","Flavor",["JavaScript","Python","PCRE","Go"]),a("ex","Example inputs (optional)","One per line")],tpl:"Write a {fl} regex for: {what}\nExamples:\n{ex}\nGive the regex, a plain explanation of each part, and a few match / no-match examples."}),
+T("sql","🗄️","SQL helper","code","Plain English to a SQL query.",{f:[a("schema","Tables and columns","users(id, name, created_at)…"),a("ask","What do you want?","Signups per week for the last 3 months"),s("db","Dialect",["PostgreSQL","MySQL","SQLite","SQL Server"])],tpl:"Write a {db} query.\nSchema:\n{schema}\nGoal: {ask}\nGive the query in a code block and explain it briefly."}),
+T("convert","🔁","Code converter","code","Translate code between languages.",{f:[a("code","Code","Paste code…"),t("from","From","JavaScript"),t("to","To","Python")],tpl:"Convert this {from} code to idiomatic {to}. Output the code, then note any behavior differences.\n\n```\n{code}\n```"}),
+T("web","🌐","Mini web builder","code","Describe a page or app. Get it live, instantly.",{k:"html",max:9000,sys:WEB,f:[a("idea","What should it be?","A pomodoro timer with a calm sunset theme"),s("look","Look",["Modern clean","Dark and techy","Playful","Editorial","Retro"])],tpl:"Build: {idea}\nLook: {look}."}),
+/* learn */
+T("eli5","🧒","Explain it simply","learn","Any topic, pitched at your level.",{f:[t("topic","What do you want explained?","How do vaccines work?"),s("lvl","Pitch it at",["Age 5","Age 12","High school","College","Expert"])],tpl:"Explain: {topic}\nPitch it at: {lvl}. Use a concrete analogy and end with a one-line takeaway."}),
+T("quiz","❓","Quiz maker","learn","Test yourself on any topic or notes.",{f:[a("src","Topic or notes","Photosynthesis, or paste your notes…"),s("n","Questions",["5","10","15"]),s("ty","Type",["Multiple choice","Short answer","Mixed"])],tpl:"Write a {n}-question {ty} quiz on the material below. Put all answers and brief explanations in a section titled 'Answers' at the end.\n\n{src}"}),
+T("cards","🗂️","Flashcards","learn","Tap-to-flip cards from a topic or notes.",{k:"cards",max:5000,sys:"You make study flashcards. Reply with ONLY a JSON array like [{\"q\":\"question\",\"a\":\"answer\"}] and nothing else. Keep answers short.",f:[a("src","Topic or notes","French revolution, or paste notes…"),s("n","Cards",["8","12","20"])],tpl:"Make {n} flashcards from:\n{src}"}),
+T("plan","📅","Study planner","learn","A realistic plan to reach your goal.",{f:[t("goal","Goal","Pass the AWS Cloud Practitioner exam"),s("wk","Time available",["1 week","2 weeks","1 month","3 months"]),s("hrs","Hours per day",["30 min","1 hour","2 hours","4 hours"])],tpl:"Make a day-by-day study plan. Goal: {goal}. Time: {wk}. Daily time: {hrs}. Include review days and a final checkpoint."}),
+T("math","➗","Math solver","learn","Step-by-step solutions you can follow.",{f:[a("p","Problem","Solve 2x² − 5x − 3 = 0")],tpl:"Solve step by step, explaining each step briefly. Verify the result at the end.\n\n{p}"}),
+T("essay","🎓","Essay feedback","learn","Honest, specific feedback on your writing.",{f:[a("essay","Your essay","Paste it here…"),s("focus","Focus on",["Overall","Argument","Structure","Style and clarity","Grammar"])],tpl:"Give candid, specific feedback on this essay, focusing on: {focus}. List top strengths, top problems, and 3 concrete edits with examples.\n\n{essay}"}),
+/* life */
+T("recipe","🍳","Recipe chef","life","Cook with what you already have.",{f:[a("ing","What's in your kitchen?","Eggs, rice, spinach, feta…"),s("diet","Diet",["Anything","Vegetarian","Vegan","Gluten-free","High protein"]),s("time","Time",["15 min","30 min","1 hour"])],tpl:"Suggest one great recipe using mostly: {ing}. Diet: {diet}. Time: {time}. Give ingredients with amounts and numbered steps."}),
+T("trip","🧳","Trip planner","life","A day-by-day itinerary with real structure.",{f:[t("where","Where to?","Lisbon"),s("days","Days",["2","3","5","7"]),s("bud","Budget",["Shoestring","Mid-range","Treat yourself"]),t("likes","You like","food, walking, history")],tpl:"Plan a {days}-day trip to {where}. Budget: {bud}. Interests: {likes}. Give morning/afternoon/evening for each day, travel tips, and what to book ahead."}),
+T("workout","💪","Workout planner","life","A plan that fits your goal and gear.",{f:[s("goal","Goal",["Build muscle","Lose fat","Get stronger","Run a 5K","General fitness"]),s("lvl","Level",LEVELS),s("days","Days per week",["2","3","4","5"]),t("gear","Equipment","Dumbbells only")],tpl:"Create a weekly workout plan. Goal: {goal}. Level: {lvl}. {days} days/week. Equipment: {gear}. Give exercises, sets x reps, rest, and progression. Add a safety note."}),
+T("gift","🎁","Gift ideas","life","Thoughtful ideas, not generic ones.",{f:[a("who","Who is it for?","My dad, 60, loves fishing and jazz"),t("bud","Budget","$50"),t("occ","Occasion","Birthday")],tpl:"Suggest 10 thoughtful gift ideas. Recipient: {who}. Budget: {bud}. Occasion: {occ}. One line on why each fits."}),
+T("decide","⚖️","Decision helper","life","Lay out the trade-offs and a recommendation.",{f:[a("d","The decision","Take the new job or stay?"),a("m","What matters most to you","Money, growth, family time…")],tpl:"Help me decide.\nDecision: {d}\nWhat matters: {m}\nGive options, pros and cons weighted by what matters, key unknowns to check, and a recommendation with reasoning."}),
+T("meeting","📋","Meeting notes to actions","life","Messy notes in, clean summary and tasks out.",{f:[a("n","Notes or transcript","Paste here…")],tpl:"From these notes produce: 1) a 3-sentence summary, 2) decisions made, 3) action items as a list with owner and due date if mentioned, 4) open questions.\n\n{n}"}),
+/* play */
+T("jokes","😂","Joke writer","play","Jokes on any topic, any flavor.",{f:[t("topic","Topic","Monday meetings"),s("kind","Flavor",["Dad jokes","Puns","Dry humor","Absurd","One-liners"])],tpl:"Write 8 original {kind} about: {topic}. Keep them clean."}),
+T("dream","🌙","Dream interpreter","play","Playful readings of strange dreams.",{sys:BASE+" Offer imaginative, symbolic interpretations as entertainment, not fact or medical advice.",f:[a("dream","Describe the dream","I was flying over my old school…")],tpl:"Give three playful interpretations of this dream, then a question to reflect on.\n\n{dream}"}),
+T("character","🧙","Character creator","play","Full characters for games and stories.",{f:[s("kind","Type",["Fantasy hero","Sci-fi captain","Villain","Detective","Side character"]),a("hint","Any hints?","Optional: traits, setting, role…")],tpl:"Create a memorable {kind}. Include name, look, backstory, a secret, a flaw, a signature quote, and 3 story hooks. Hints: {hint}"}),
+T("adventure","🐉","Adventure game","play","A text adventure that reacts to you.",{k:"chat",f:[t("setting","Setting","A drowned city where bells ring at night")],sys:"You are a text adventure game master. Setting: {setting}. Describe each scene vividly in under 120 words and end every turn with 3 numbered choices plus the option to type anything. Track inventory and health.",hello:"Pick a setting above, then type 'begin'."}),
+T("trivia","🎲","Trivia host","play","Quick-fire questions with a running score.",{k:"chat",f:[t("topic","Topic","90s cartoons"),s("diff","Difficulty",["Easy","Medium","Hard"])],sys:"You are an upbeat trivia host. Topic: {topic}. Difficulty: {diff}. Ask one question at a time, say if the answer is right, add a fun fact, and keep score.",hello:"Choose a topic, then type 'start'."}),
+T("reply","↩️","Reply helper","write","Paste a message, get reply options.",{f:[a("msg","Message you received","Paste it here…"),a("intent","What do you want to say? (optional)","Politely decline, ask for more time…"),s("tone","Tone",["Friendly","Professional","Short and direct","Warm"])],tpl:"Write 3 reply options (short, medium, detailed) in a {tone} tone.\nMessage received:\n{msg}\nWhat I want to say: {intent}"}),
+T("bio","🪪","Bio writer","write","Short bios for LinkedIn, sites and socials.",{f:[a("facts","About you","Role, skills, achievements, interests…"),s("where","Where",["LinkedIn About","X / Instagram","Website","Conference speaker","Dating profile"]),s("pov","Voice",["First person","Third person"])],tpl:"Write 3 versions of a bio for: {where}. Voice: {pov}. Use only these facts and don't invent any:\n{facts}"}),
+T("tests","🧪","Unit test writer","code","Generate tests for your code.",{f:[a("code","Code","Paste code…"),t("fw","Test framework","pytest, Jest, JUnit")],tpl:"Write thorough unit tests using {fw}. Cover normal cases, edge cases and errors. Output the test code in a fenced block, then list what each test covers.\n\n```\n{code}\n```"}),
+T("commit","🔀","Commit message","code","Clean commit messages from a diff.",{f:[a("diff","Diff or description of changes","Paste git diff…")],tpl:"Write a Conventional Commits message (subject under 72 characters, body explaining why). Also give 2 alternative subjects.\n\n{diff}"}),
+T("readme","📘","README writer","code","A solid README from your project notes.",{f:[a("info","About the project","What it does, how to run it, tech stack…")],tpl:"Write a clear README.md in Markdown with: title, one-line summary, features, install, usage, configuration, contributing, license placeholder. Base it only on this info:\n{info}"}),
+T("shell","🖥️","Shell command helper","code","Plain English to terminal commands.",{f:[a("task","What do you want to do?","Find files over 100MB modified this week"),s("os","System",["Linux / macOS (bash)","Windows PowerShell","Windows cmd","zsh"])],tpl:"Give the command for: {task}\nSystem: {os}\nExplain each part and flag anything destructive."}),
+T("review","🧐","Code reviewer","code","A candid review: bugs, security, style.",{f:[a("code","Code","Paste code…"),s("focus","Focus",["Everything","Bugs","Security","Performance","Readability"])],tpl:"Review this code. Focus: {focus}. List issues by severity with line references and a suggested fix for each. End with 3 prioritized actions.\n\n```\n{code}\n```"}),
+T("formula","📊","Spreadsheet formulas","code","Describe it, get the Excel or Sheets formula.",{f:[a("ask","What should the formula do?","Sum column C where column A says Paid"),s("app","App",["Excel","Google Sheets"]),a("layout","Your columns (optional)","A: Status, B: Date, C: Amount")],tpl:"Write a {app} formula for: {ask}\nLayout: {layout}\nGive the formula, explain it, and show an example."}),
+T("lesson","🍎","Lesson plan","learn","A ready-to-teach plan with activities.",{f:[t("topic","Topic","Fractions"),t("grade","Audience","Grade 5"),s("len","Length",["30 min","45 min","60 min","90 min"])],tpl:"Create a {len} lesson plan on {topic} for {grade}: objectives, materials, timed activities, check for understanding, differentiation, homework."}),
+T("vocab","🔤","Vocabulary builder","learn","Words with meanings, examples and memory tricks.",{f:[t("lang","Language or subject","Spanish travel phrases"),s("n","Words",["10","20","30"]),s("lvl","Level",LEVELS)],tpl:"Give {n} useful {lvl} vocabulary items for: {lang}. For each: word, meaning, example sentence, and a memory trick. Finish with a mini quiz."}),
+T("meals","🥗","Weekly meal planner","life","Seven days of meals plus a shopping list.",{f:[s("diet","Diet",["Anything","Vegetarian","Vegan","Gluten-free","High protein","Low carb"]),t("n","People","2"),t("avoid","Dislikes or allergies","none"),s("eff","Cooking effort",["Minimal","Medium","I enjoy cooking"])],tpl:"Plan 7 days of dinners (with simple breakfast and lunch ideas). Diet: {diet}. People: {n}. Avoid: {avoid}. Effort: {eff}. Finish with a grouped shopping list."}),
+T("agenda","🗓️","Agenda maker","life","A timed agenda for any meeting.",{f:[t("goal","Meeting goal","Decide Q4 priorities"),t("who","Who's attending","Product team of 6"),s("len","Length",["15 min","30 min","60 min","90 min"])],tpl:"Create a {len} meeting agenda. Goal: {goal}. Attendees: {who}. Include time boxes, owners, pre-reads, and the decisions needed."}),
+T("validate","🔭","Idea validator","create","Stress-test a business or product idea.",{f:[a("idea","Your idea","Describe it in a few sentences…"),t("who","Target customer","Freelance designers")],tpl:"Evaluate this idea critically for {who}: {idea}\nGive: SWOT, biggest risks, who already solves it, the cheapest way to test demand in a week, and a go / pivot / stop verdict."}),
+T("slides","🎞️","Slide outline","create","A slide-by-slide outline with talking points.",{f:[t("topic","Topic","Our Q3 results"),t("aud","Audience","Leadership team"),s("n","Slides",["5","8","12"])],tpl:"Create a {n}-slide outline on {topic} for {aud}. For each slide: title, 3 bullets, speaker notes, and a suggested visual."}),
+T("video","🎬","Video script","create","Hooks, structure and a script for short video.",{f:[a("topic","What's the video about?","How to brew better coffee"),s("len","Length",["30 sec","60 sec","3 min","8 min"]),s("pl","Platform",["TikTok, Reels, Shorts","YouTube","Explainer"])],tpl:"Write a {len} video script for {pl} about: {topic}. Include 3 hook options, a scene-by-scene script with on-screen text, and a call to action."}),
+T("riddle","🧩","Riddle maker","play","Original riddles with answers hidden.",{f:[t("theme","Theme","The ocean"),s("diff","Difficulty",["Easy","Medium","Hard"])],tpl:"Write 5 original {diff} riddles about: {theme}. Put the answers at the end under 'Answers'."})
+
+];
+const CATS=[["chat","Chat"],["write","Write"],["create","Create"],["code","Code"],["learn","Learn"],["life","Life"],["play","Play"]];
+
+/* ---------- state ---------- */
+const PROV=[
+ {id:"free",n:"Free shared AI (Pollinations, no key)",base:"https://gen.pollinations.ai/v1",alt:"https://text.pollinations.ai/openai",model:"openai",nokey:1,free:1,url:"https://pollinations.ai"},
+ {id:"anthropic",n:"Anthropic (Claude)",kind:"anthropic",base:"https://api.anthropic.com",model:"claude-sonnet-5-5",url:"https://console.anthropic.com/settings/keys"},
+ {id:"openai",n:"OpenAI",base:"https://api.openai.com/v1",model:"gpt-4o-mini",url:"https://platform.openai.com/api-keys"},
+ {id:"gemini",n:"Google Gemini",base:"https://generativelanguage.googleapis.com/v1beta/openai",model:"gemini-2.0-flash",url:"https://aistudio.google.com/apikey"},
+ {id:"mistral",n:"Mistral",base:"https://api.mistral.ai/v1",model:"mistral-small-latest",url:"https://console.mistral.ai/api-keys"},
+ {id:"groq",n:"Groq",base:"https://api.groq.com/openai/v1",model:"llama-3.3-70b-versatile",url:"https://console.groq.com/keys"},
+ {id:"deepseek",n:"DeepSeek",base:"https://api.deepseek.com/v1",model:"deepseek-chat",url:"https://platform.deepseek.com/api_keys"},
+ {id:"xai",n:"xAI (Grok)",base:"https://api.x.ai/v1",model:"grok-3-mini",url:"https://console.x.ai"},
+ {id:"openrouter",n:"OpenRouter (hundreds of models)",base:"https://openrouter.ai/api/v1",model:"openai/gpt-4o-mini",url:"https://openrouter.ai/keys"},
+ {id:"together",n:"Together AI",base:"https://api.together.xyz/v1",model:"meta-llama/Llama-3.3-70B-Instruct-Turbo",url:"https://api.together.ai/settings/api-keys"},
+ {id:"fireworks",n:"Fireworks AI",base:"https://api.fireworks.ai/inference/v1",model:"accounts/fireworks/models/llama-v3p3-70b-instruct",url:"https://fireworks.ai/account/api-keys"},
+ {id:"cerebras",n:"Cerebras",base:"https://api.cerebras.ai/v1",model:"llama3.3-70b",url:"https://cloud.cerebras.ai"},
+ {id:"perplexity",n:"Perplexity",base:"https://api.perplexity.ai",model:"sonar",url:"https://www.perplexity.ai/settings/api",nolist:1},
+ {id:"ollama",n:"Ollama (on your computer)",base:"http://localhost:11434/v1",model:"llama3.2",nokey:1,url:"https://ollama.com"},
+ {id:"lmstudio",n:"LM Studio (on your computer)",base:"http://localhost:1234/v1",model:"",nokey:1,url:"https://lmstudio.ai"}
+];
+let P={prov:{},custom:[],active:"",tier:"default",pins:[],theme:"",about:"",temp:null,mine:[],photo:{}};
+try{const o=JSON.parse(localStorage.getItem("sb:v1")||"{}");Object.assign(P,o);
+  if(o.key){P.prov.anthropic=Object.assign({},P.prov.anthropic,{key:o.key});if(/^claude/.test(o.model||""))P.prov.anthropic.model=o.model;delete P.key;delete P.model}}catch(e){}
+let D={hist:[],tools:{}};
+try{Object.assign(D,JSON.parse(localStorage.getItem("sb:data")||"{}"))}catch(e){}
+const saveP=()=>{try{localStorage.setItem("sb:v1",JSON.stringify(P))}catch(e){}};
+let _dt;const saveD=()=>{clearTimeout(_dt);_dt=setTimeout(()=>{try{localStorage.setItem("sb:data",JSON.stringify(D))}catch(e){try{D.hist=D.hist.slice(0,15);localStorage.setItem("sb:data",JSON.stringify(D))}catch(e2){}}},250)};
+if(P.theme)document.documentElement.dataset.theme=P.theme;
+const words=s=>(String(s).match(/\S+/g)||[]).length;
+const ALL=()=>PROV.filter(p=>!(EMBED&&p.free)).concat(P.custom.map(c=>({id:c.id,n:c.n||"Custom endpoint",base:"",model:"",custom:1,nokey:1})));
+function cfg(id){const d=ALL().find(x=>x.id===id)||{},s=P.prov[id]||{};
+  return {id,n:d.n,kind:d.kind||"oai",base:s.base||d.base||"",model:s.model||d.model||"",key:s.key||"",on:!!s.on,custom:!!d.custom,nokey:!!d.nokey,url:d.url,nolist:!!d.nolist,free:!!d.free,alt:d.alt||""}}
+function ready(id){const c=cfg(id);return c.custom?!!c.base:c.nokey?c.on:!!c.key}
+const mineTool=u=>({id:u.id,i:u.i||"✨",n:u.n,c:"mine",d:u.d||"My own AI",k:u.k==="chat"?"chat":"text",sys:u.sys||BASE,f:u.k==="chat"?[]:[a("input",u.label||"Input",u.ph||"")],tpl:"{input}",hello:u.hello||"How can I help?",mine:1});
+const allTools=()=>TOOLS.concat(P.mine.map(mineTool));
+const findTool=id=>allTools().find(x=>x.id===id);
+const CATS2=()=>CATS.concat(P.mine.length?[["mine","My tools"]]:[]);
+const PAGES=[
+ {id:"compare",c:"chat",i:"🆚",n:"Compare AIs",d:"One prompt, several AIs, side by side."},
+ {id:"photo",c:"create",i:"📷",n:"Photo generator",d:"Real images from an image model."},
+ {id:"history",c:"learn",i:"🕘",n:"History",d:"Your saved chats and results."},
+ {id:"new",c:"mine",i:"➕",n:"Make your own AI",d:"Build a custom tool in a minute."}];
+const M={};let viewing="";
+const EMBED=!!(window.claude&&typeof claude.use==="function");
+let SAMPLE=null,DL=null,settled=!EMBED,SAMPLE_P=null;
+const readyList=()=>{const real=ALL().filter(d=>!d.free&&ready(d.id)).map(d=>cfg(d.id)),sm=SAMPLE?[{id:"claude",n:"Claude (built in)",model:"",kind:"sample"}]:[];
+  const fr=(cfg("free").on||(!EMBED&&!real.length&&!sm.length))?[cfg("free")]:[];return sm.concat(real,fr)};
+const usingFreeOnly=()=>{const r=readyList();return r.length===1&&r[0].id==="free"};
+const activeId=()=>{const r=readyList();return r.some(x=>x.id===P.active)?P.active:(r[0]&&r[0].id)||""};
+const hasAI=()=>readyList().length>0;
+const btnLabel=()=>hasAI()&&!usingFreeOnly()?"AI keys":"Add AI keys";
+function syncProv(){const sel=$("#prov"),r=readyList();
+  sel.innerHTML=r.map(x=>`<option value="${esc(x.id)}">${esc(x.n.replace(/ \(.*\)/,""))}${x.model?" · "+esc(x.model):""}</option>`).join("");
+  sel.hidden=!r.length;sel.value=activeId();$("#setBtn").textContent=btnLabel()}
+function syncMode(){syncProv();if(!viewing)viewHome()}
+if(!settled){SAMPLE_P=Promise.all([claude.use("sample").catch(()=>null),claude.use("downloads").catch(()=>null)]).then(([s,d])=>{SAMPLE=s;DL=d;settled=true;syncMode()})}
+const slim=msgs=>msgs.map(m=>m.img&&m.img.length?{role:m.role,content:(m.content||"")+" [image]"}:{role:m.role,content:m.content});
+const lastA=msgs=>{const m=[...msgs].reverse().find(x=>x.role==="assistant");return m?m.content:""};
+function S(tool){if(!M[tool.id]){const vals={};tool.f.forEach(f=>vals[f.k]=f.t==="sel"?f.o[0]:"");const d=D.tools[tool.id]||{},msgs=d.msgs||[];
+  M[tool.id]={vals:Object.assign(vals,d.vals||{}),msgs,text:tool.k==="chat"?"":lastA(msgs),err:"",busy:false,tab:"preview",via:d.via||"",sys:d.sys||"",prov:"",sid:d.sid||0,ms:0,pend:{txt:[],img:[]}}}return M[tool.id]}
+function persist(tool){const st=S(tool);
+  D.tools[tool.id]={vals:st.vals,msgs:slim(st.msgs),via:st.via,sys:st.sys,sid:st.sid};
+  if(st.msgs.length){const f=tool.f.find(x=>x.t!=="sel"),raw=tool.k==="chat"||!f?st.msgs[0].content:(st.vals[f.k]||st.msgs[0].content);
+    const title=String(raw).replace(/\[Attached file: [^\]]+\][\s\S]*?```\n?/g,"").replace(/\s+/g," ").trim().slice(0,80)||tool.n;
+    const key=tool.id+":"+st.sid,item={key,tool:tool.id,title,ts:Date.now(),msgs:slim(st.msgs),vals:st.vals,via:st.via};
+    D.hist=D.hist.filter(h=>h.key!==key);D.hist.unshift(item);D.hist=D.hist.slice(0,80)}
+  saveD()}
+
+/* ---------- API ---------- */
+async function hdrErr(res){let m="";try{let j=await res.json();if(Array.isArray(j))j=j[0]||{};m=(j.error&&(j.error.message||j.error))||j.message||j.detail||""}catch(e){}
+  if(typeof m!=="string")m=JSON.stringify(m);const er=new Error(m||"Request failed ("+res.status+")");er.status=res.status;return er}
+async function sse(res,onEvent){const rd=res.body.getReader(),dec=new TextDecoder();let buf="";
+  for(;;){const {done,value}=await rd.read();if(done)break;buf+=dec.decode(value,{stream:true});
+    const lines=buf.split("\n");buf=lines.pop();
+    for(const ln of lines){if(!ln.startsWith("data:"))continue;const j=ln.slice(5).trim();if(!j||j==="[DONE]")continue;
+      let ev;try{ev=JSON.parse(j)}catch(e){continue}onEvent(ev)}}}
+const trim=u=>u.replace(/\/+$/,"");
+function wire(messages,kind){return messages.map(m=>{if(!m.img||!m.img.length)return {role:m.role,content:m.content};
+  const text={type:"text",text:m.content||"Describe this image."};
+  if(kind==="anthropic")return {role:m.role,content:[...m.img.map(u=>{const x=u.match(/^data:([^;]+);base64,(.*)$/);return {type:"image",source:{type:"base64",media_type:x[1],data:x[2]}}}),text]};
+  return {role:m.role,content:[...m.img.map(u=>({type:"image_url",image_url:{url:u}})),text]}})}
+const tempPart=()=>P.temp!=null?{temperature:P.temp}:{};
+async function streamA(c,messages,system,onText,signal,max){
+  const res=await fetch(trim(c.base)+"/v1/messages",{method:"POST",signal,
+    headers:{"content-type":"application/json","x-api-key":c.key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+    body:JSON.stringify({model:c.model,max_tokens:max||4096,system,messages:wire(messages,"anthropic"),stream:true,...tempPart()})});
+  if(!res.ok)throw await hdrErr(res);let acc="";
+  await sse(res,ev=>{if(ev.type==="content_block_delta"&&ev.delta&&ev.delta.type==="text_delta"){acc+=ev.delta.text;onText(acc)}else if(ev.type==="error")throw new Error(ev.error&&ev.error.message||"Stream error")});
+  return acc}
+async function streamO(c,messages,system,onText,signal){
+  const h={"content-type":"application/json"};if(c.key)h.authorization="Bearer "+c.key;
+  const res=await fetch(trim(c.base)+"/chat/completions",{method:"POST",signal,headers:h,
+    body:JSON.stringify({model:c.model,messages:[{role:"system",content:system},...wire(messages,"oai")],stream:true,...tempPart()})});
+  if(!res.ok)throw await hdrErr(res);let acc="";
+  await sse(res,ev=>{const d=ev.choices&&ev.choices[0]&&ev.choices[0].delta;if(d&&d.content){acc+=d.content;onText(acc)}else if(ev.error)throw new Error(ev.error.message||"Stream error")});
+  return acc}
+async function listModels(c){
+  const h={};let url;
+  if(c.kind==="anthropic"){url=trim(c.base)+"/v1/models?limit=100";h["x-api-key"]=c.key;h["anthropic-version"]="2023-06-01";h["anthropic-dangerous-direct-browser-access"]="true"}
+  else{url=trim(c.base)+"/models";if(c.key)h.authorization="Bearer "+c.key}
+  const res=await fetch(url,{headers:h});if(!res.ok)throw await hdrErr(res);const j=await res.json();
+  return (j.data||j.models||[]).map(m=>(m.id||m.name||"").replace(/^models\//,"")).filter(Boolean).sort()}
+async function ask(messages,system,onText,signal,max,prov){
+  prov=prov||activeId();
+  if(prov==="claude"&&SAMPLE){
+    if(messages.some(m=>m.img&&m.img.length))throw new Error("Claude (built in) can't see images. Pick an API provider in the top bar.");
+    const input=messages.map((m,i)=>({role:m.role,content:i===0?system+"\n\n---\n\n"+m.content:m.content}));
+    const r=await SAMPLE(input,{modelTier:P.tier||"default",cache:false,signal,onText:({text})=>onText(text)});
+    return r.text}
+  const c=cfg(prov);
+  if(c.free){if(!ask.w){ask.w=1;toast("Using the free shared AI. Don't send private information.")}
+    const bases=[c.base,c.alt].filter((v,i,a)=>v&&a.indexOf(v)===i);let last;
+    for(const b of bases){let got=false;try{return await streamO({...c,base:b},messages,system,x=>{got=true;onText(x)},signal,max)}catch(e){last=e;if(got||e.name==="AbortError")break}}
+    last.prov=c.n;throw last}
+  if(!c.base)throw Object.assign(new Error("Set an endpoint URL for "+c.n+" in AI keys."),{prov:c.n});
+  if(!c.model)throw Object.assign(new Error("Pick a model for "+c.n+" in AI keys (use Fetch models)."),{prov:c.n});
+  try{return await (c.kind==="anthropic"?streamA:streamO)(c,messages,system,onText,signal,max)}catch(e){e.prov=c.n;throw e}}
+const friendly=e=>{const who=e.prov||"The provider";
+  if(e.code==="not_granted"||e.code==="sampling_disabled")return "Claude isn't enabled for this page. Allow it when asked, or check your account settings.";
+  if(e.code==="rate_limited")return "Rate limit reached. Wait a moment and try again.";
+  if(e.code==="prompt_too_large")return "That input is too long. Try a shorter one.";
+  if(e.code)return "Claude couldn't finish that. Try again.";
+  if(/Free shared/.test(who)&&e.name!=="AbortError")return "The free shared AI is busy or unavailable right now. Try again in a moment, or add your own key (free keys from Groq or Gemini take about a minute).";
+  if(e.status===401||e.status===403)return who+" rejected the API key. Check it in AI keys.";
+  if(e.status===404)return who+" doesn't know that model or URL. Open AI keys and use Fetch models.";
+  if(e.status===429)return who+" says you're out of quota or going too fast. Wait, or check your plan.";
+  if(EMBED&&/Failed to fetch|NetworkError|Load failed/i.test(e.message))return who+" can't be reached from this hosted page, which only allows Claude. For your own keys, use the GitHub Pages or iPhone version of Switchboard.";
+  if(/Failed to fetch|NetworkError|Load failed/i.test(e.message))return who+" couldn't be reached. The URL may be wrong, you may be offline, or it blocks browser requests (CORS). OpenRouter works from any browser.";
+  return (e.message||"Something went wrong.")};
+const sysFor=(tool,st)=>(st.sys.trim()||fill(tool.sys,st.vals))+(P.about?"\n\nAbout the user and how they like answers:\n"+P.about:"");
+
+let raf=0;const schedule=tool=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;paint(tool)})};
+async function run(tool){
+  const st=S(tool);if(st.busy)return;
+  if(!settled)await SAMPLE_P;
+  if(!hasAI()){openSettings();toast("Add an API key to start");return}
+  const R=readyList(),pv=R.some(x=>x.id===st.prov)?st.prov:activeId(),pc=pv==="claude"?{n:"Claude",model:""}:cfg(pv);
+  st.via=pc.n.replace(/ \(.*\)/,"")+(pc.model?" · "+pc.model:"");
+  st.err="";st.busy=true;st.text="";st.ctl=new AbortController();const t0=performance.now();paint(tool);
+  try{
+    const out=await ask(st.msgs,sysFor(tool,st),x=>{st.text=x;schedule(tool)},st.ctl.signal,tool.max,pv);
+    st.msgs.push({role:"assistant",content:out});st.text=out;
+  }catch(e){
+    const ab=e.name==="AbortError"||e.code==="cancelled";
+    if(ab&&st.text){st.msgs.push({role:"assistant",content:st.text})}
+    else{st.msgs.pop();st.text=tool.k==="chat"?"":lastA(st.msgs);if(!ab)st.err=friendly(e)}
+  }finally{st.ms=performance.now()-t0;st.busy=false;st.ctl=null;persist(tool);paint(tool)}
+}
+function start(tool){
+  const st=S(tool);if(st.busy){st.ctl&&st.ctl.abort();return}
+  const first=tool.f.find(f=>f.t!=="sel");
+  if(first&&!(st.vals[first.k]||"").trim()){toast("Fill in: "+first.l);return}
+  st.sid=Date.now();st.msgs=[{role:"user",content:fill(tool.tpl,st.vals)}];run(tool)}
+
+/* ---------- voice and files ---------- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function dictate(btn,onText){if(!SR)return;if(dictate.r){dictate.r.stop();return}
+  const r=dictate.r=new SR();r.interimResults=false;r.continuous=false;r.lang=navigator.language||"en-US";btn.classList.add("rec");
+  r.onresult=e=>onText([...e.results].map(x=>x[0].transcript).join(" "));
+  r.onend=r.onerror=()=>{btn.classList.remove("rec");dictate.r=null};try{r.start()}catch(e){dictate.r=null;btn.classList.remove("rec")}}
+function say(text){const s=window.speechSynthesis;if(!s){toast("Read aloud isn't supported in this browser");return}
+  if(s.speaking){s.cancel();return}
+  const u=new SpeechSynthesisUtterance(text.replace(/```[\s\S]*?```/g," code block. ").replace(/\[([^\]]+)\]\([^)]*\)/g,"$1").replace(/[#*_`>|]/g,""));u.lang=navigator.language;s.speak(u)}
+const readText=f=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(String(r.result));r.onerror=no;r.readAsText(f)});
+const readUrl=f=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(String(r.result));r.onerror=no;r.readAsDataURL(f)});
+function shrink(url){return new Promise(ok=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);ok(c.toDataURL("image/jpeg",.85))};im.onerror=()=>ok(url);im.src=url})}
+async function takeFiles(files,st){let n=0;
+  for(const f of files){
+    if(/^image\/(png|jpe?g|gif|webp)$/.test(f.type)){if(f.size>12e6){toast(f.name+" is too large");continue}st.pend.img.push(await shrink(await readUrl(f)));n++}
+    else if(f.size>3e6){toast(f.name+" is too large (3 MB max)")}
+    else{let tx;try{tx=await readText(f)}catch(e){toast("Couldn't read "+f.name);continue}if(/\u0000/.test(tx.slice(0,2000))){toast(f.name+" isn't a text file");continue}
+      if(tx.length>150000){tx=tx.slice(0,150000)+"\n…[truncated]";toast(f.name+" was truncated")}st.pend.txt.push({name:f.name,text:tx});n++}}
+  return n}
+function exportChat(tool){const st=S(tool);if(!st.msgs.length){toast("Nothing to export yet");return}
+  const mdx="# "+tool.n+"\n\n"+st.msgs.map(m=>(m.role==="user"?"**You:** ":"**AI:** ")+m.content).join("\n\n---\n\n")+"\n";
+  saveFile(tool.id+"-chat.md",new Blob([mdx],{type:"text/markdown"}))}
+
+/* ---------- views ---------- */
+function tile(x){return `<a class="tile" data-c="${x.c}" href="#/${x.id}"><span class="ti">${x.i}</span><b>${esc(x.n)}</b><small>${esc(x.d)}</small></a>`}
+function openHist(key){const h=D.hist.find(x=>x.key===key);if(!h)return;const tool=findTool(h.tool);if(!tool){toast("That tool no longer exists");return}
+  const st=S(tool);if(st.busy){toast("Wait for the current answer to finish");return}
+  st.msgs=h.msgs.map(m=>({...m}));st.vals=Object.assign(st.vals,h.vals||{});st.text=tool.k==="chat"?"":lastA(st.msgs);st.via=h.via||"";st.sid=+key.split(":")[1]||Date.now();st.err="";
+  if(location.hash==="#/"+tool.id)route();else location.hash="#/"+tool.id}
+function viewHome(){
+  viewing="";
+  const pins=allTools().filter(x=>P.pins.includes(x.id)),L=D.hist.slice(0,4),n=allTools().length;
+  $("#view").innerHTML=`<h1>${n} tools. Use any AI you like.</h1>
+  <p class="lede">Chat partners, writers, image makers, coders and study helpers. Add keys for OpenAI, Gemini, Claude, Mistral, Groq and more (or your own endpoint URL), then pick which AI answers. Build your own tools too.</p>
+  ${usingFreeOnly()?`<div class="banner"><span><b>You're on the free shared AI.</b> It needs no key, but it is slower and less capable, and your prompts go to a third-party service. Add your own free key for better results.</span><button class="btn pri" id="bk" type="button">Get a free key</button></div>`:hasAI()?"":`<div class="banner"><span>Add an API key for any provider to switch these on. Keys stay in your browser.</span><button class="btn pri" id="bk">Add AI keys</button></div>`}
+  ${L.length?`<div class="sec" data-c="chat"><i></i><h2>Continue</h2></div><div class="recent">${L.map(h=>{const tl=findTool(h.tool);return `<button class="rc" data-key="${esc(h.key)}" type="button"><span class="e">${tl?tl.i:"•"}</span><span><b>${esc(h.title)}</b><small>${esc(tl?tl.n:"")}</small></span></button>`}).join("")}</div>`:""}
+  <div class="sec" data-c="chat"><i></i><h2>More than tools</h2></div><div class="tiles">${PAGES.map(tile).join("")}</div>
+  ${pins.length?`<div class="sec" data-c="chat"><i style="background:var(--ink)"></i><h2>Pinned</h2></div><div class="tiles">${pins.map(tile).join("")}</div>`:""}
+  ${CATS2().map(([c,nm])=>{const T2=allTools().filter(x=>x.c===c);return `<div class="sec" data-c="${c}"><i></i><h2>${nm}</h2><small>${T2.length}</small></div><div class="tiles">${T2.map(tile).join("")}</div>`}).join("")}`;
+  const bk=$("#bk");if(bk)bk.onclick=()=>openSettings(usingFreeOnly()?"__free":"");
+  $("#view").onclick=e=>{const rc=e.target.closest(".rc");if(rc)openHist(rc.dataset.key)}}
+
+function fieldHtml(f,st){
+  const v=st.vals[f.k];
+  const inp=f.t==="area"?`<textarea data-k="${f.k}" rows="5" placeholder="${esc(f.p||"")}">${esc(v)}</textarea>`
+   :f.t==="sel"?`<select data-k="${f.k}">${f.o.map(o=>`<option${o===v?" selected":""}>${esc(o)}</option>`).join("")}</select>`
+   :`<input data-k="${f.k}" value="${esc(v)}" placeholder="${esc(f.p||"")}">`;
+  return `<label class="fld"><span>${esc(f.l)}</span>${inp}</label>`}
+const FILEACC=".txt,.md,.csv,.json,.js,.ts,.py,.html,.css,.xml,.yml,.yaml,.log,.sql,.sh,.java,.c,.cpp,.go,.rs,.rb,.php,text/*";
+function chipsHtml(st){return st.pend.txt.map((f,i)=>`<span class="chip">📎 ${esc(f.name)}<button type="button" data-rm="t${i}" aria-label="Remove">✕</button></span>`).join("")+st.pend.img.map((u,i)=>`<span class="chip"><img src="${u}" alt="">image<button type="button" data-rm="i${i}" aria-label="Remove">✕</button></span>`).join("")}
+
+function viewTool(tool){
+  viewing=tool.id;const st=S(tool),chat=tool.k==="chat",pinned=P.pins.includes(tool.id),R=readyList();
+  const head=`<div class="thead" data-c="${tool.c}"><div class="big">${tool.i}</div><div style="min-width:0"><h1>${esc(tool.n)}</h1><p>${esc(tool.d)}</p></div><span class="sp"></span>
+  ${R.length>1?`<select class="btn" id="tprov" title="Which AI answers here" aria-label="AI for this tool"><option value="">Default AI</option>${R.map(x=>`<option value="${esc(x.id)}"${x.id===st.prov?" selected":""}>${esc(x.n.replace(/ \(.*\)/,""))}</option>`).join("")}</select>`:""}
+  ${tool.mine?`<a class="btn" href="#/edit/${esc(tool.id)}">Edit</a>`:""}
+  ${chat?`<button class="btn" id="exp" type="button">Export</button><button class="btn" id="newchat" type="button">New chat</button>`:""}
+  <button class="btn" id="pin" type="button" aria-pressed="${pinned}">${pinned?"★ Pinned":"☆ Pin"}</button></div>
+  <details class="adv"><summary>Instructions for this tool</summary><textarea id="sysov" rows="5" placeholder="${esc(fill(tool.sys,st.vals))}">${esc(st.sys)}</textarea><p class="hint">This is what the AI is told before your message. Edit it to change how this tool behaves, or leave it blank for the default.</p></details>`;
+  const hasArea=tool.f.some(f=>f.t==="area");
+  if(chat){
+    $("#view").innerHTML=head+(tool.f.length?`<div class="setup">${tool.f.map(f=>fieldHtml(f,st)).join("")}</div>`:"")+`<div class="thread" id="outbody"></div>
+    <div class="chips" id="chips"></div>
+    <form class="compose" id="compose"><button class="ib" type="button" id="att" title="Attach a file or image" aria-label="Attach">📎</button><input type="file" id="file" multiple hidden accept="image/png,image/jpeg,image/gif,image/webp,${FILEACC}"><textarea id="msg" rows="1" placeholder="Message…" aria-label="Message"></textarea><button class="ib" type="button" id="mic" title="Dictate" aria-label="Dictate" ${SR?"":"hidden"}>🎤</button><button class="run" id="run">Send</button></form>`;
+    const msg=$("#msg"),form=$("#compose");
+    form.onsubmit=e=>{e.preventDefault();if(st.busy){st.ctl&&st.ctl.abort();return}
+      const v=msg.value.trim();if(!v&&!st.pend.img.length&&!st.pend.txt.length)return;
+      if(!st.msgs.length)st.sid=Date.now();
+      const att=st.pend.txt.map(f=>"[Attached file: "+f.name+"]\n```\n"+f.text+"\n```").join("\n\n");
+      st.msgs.push({role:"user",content:(att?att+"\n\n":"")+v,img:st.pend.img.slice()});st.pend={txt:[],img:[]};
+      msg.value="";msg.style.height="auto";$("#chips").innerHTML="";run(tool)};
+    msg.onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();form.requestSubmit()}};
+    msg.oninput=()=>{msg.style.height="auto";msg.style.height=Math.min(140,msg.scrollHeight)+"px"};
+    $("#att").onclick=()=>$("#file").click();
+    $("#file").onchange=async e=>{await takeFiles([...e.target.files],st);e.target.value="";$("#chips").innerHTML=chipsHtml(st)};
+    $("#chips").innerHTML=chipsHtml(st);
+    $("#chips").onclick=e=>{const b=e.target.closest("[data-rm]");if(!b)return;const k=b.dataset.rm,i=+k.slice(1);(k[0]==="t"?st.pend.txt:st.pend.img).splice(i,1);$("#chips").innerHTML=chipsHtml(st)};
+    $("#mic").onclick=e=>dictate(e.currentTarget,t=>{msg.value=(msg.value+" "+t).trim();msg.oninput()});
+    $("#newchat").onclick=()=>{if(st.ctl)st.ctl.abort();st.msgs=[];st.text="";st.err="";st.sid=0;persist(tool);paint(tool)};
+    $("#exp").onclick=()=>exportChat(tool);
+  }else{
+    $("#view").innerHTML=head+`<div class="work" data-c="${tool.c}"><form class="form" id="form">${tool.f.map(f=>fieldHtml(f,st)).join("")}
+    ${hasArea?`<div class="aux"><button type="button" class="btn" id="fatt">📎 Load a file</button><button type="button" class="btn" id="fmic" ${SR?"":"hidden"}>🎤 Dictate</button></div>`:""}
+    <div class="aux"><button class="run" id="run">Run</button>${tool.f.some(f=>f.t!=="sel"&&f.p)?`<button type="button" class="btn" id="ex">Try an example</button>`:""}</div>
+    <input type="file" id="file" hidden accept="${FILEACC}"></form>
+    <section class="out"><div id="outbody"></div><div id="outbar"></div></section></div>`;
+    const firstArea=tool.f.find(f=>f.t==="area"),setVal=(k,v)=>{st.vals[k]=v;const el=$(`[data-k=${k}]`);if(el)el.value=v};
+    $("#form").onsubmit=e=>{e.preventDefault();start(tool)};
+    $("#form").onkeydown=e=>{if(e.key==="Enter"&&(e.metaKey||e.ctrlKey)){e.preventDefault();start(tool)}};
+    if(hasArea){
+      $("#fatt").onclick=()=>$("#file").click();
+      $("#file").onchange=async e=>{const t0=[];for(const f of e.target.files){if(f.size>3e6){toast(f.name+" is too large (3 MB max)");continue}try{t0.push(await readText(f))}catch(er){toast("Couldn't read "+f.name)}}
+        e.target.value="";if(t0.length){const cur=st.vals[firstArea.k]||"";setVal(firstArea.k,(cur?cur+"\n\n":"")+t0.join("\n\n").slice(0,150000));toast("File loaded")}};
+      $("#fmic").onclick=e=>dictate(e.currentTarget,t=>setVal(firstArea.k,((st.vals[firstArea.k]||"")+" "+t).trim()))}
+    const ex=$("#ex");if(ex)ex.onclick=()=>{tool.f.forEach(f=>{if(f.t!=="sel"&&f.p&&!(st.vals[f.k]||"").trim())setVal(f.k,f.p)})};
+    $("#outbar").onclick=e=>{const b=e.target.closest("[data-a]");if(b)action(tool,b.dataset.a)};
+    $("#outbar").onsubmit=e=>{e.preventDefault();const i=$("#rf"),v=i&&i.value.trim();if(!v||st.busy)return;st.msgs.push({role:"user",content:v});run(tool)};
+  }
+  $("#view").oninput=e=>{const k=e.target.dataset&&e.target.dataset.k;if(k)st.vals[k]=e.target.value;if(e.target.id==="sysov"){st.sys=e.target.value;persist(tool)}};
+  $("#view").onchange=e=>{if(e.target.id==="tprov")st.prov=e.target.value};
+  $("#outbody").onclick=e=>{
+    const tb=e.target.closest("[data-tab]");if(tb){st.tab=tb.dataset.tab;paint(tool);return}
+    const fc=e.target.closest(".fc");if(fc){fc.classList.toggle("flip");return}
+    const cp=e.target.closest(".cp");if(cp){const code=cp.parentElement.querySelector("code");navigator.clipboard.writeText(code.textContent).then(()=>{cp.textContent="Copied";setTimeout(()=>cp.textContent="Copy",1200)},()=>toast("Copy isn't available here"));return}
+    const ba=e.target.closest("[data-ba]");if(ba){const m=st.msgs[+ba.dataset.i];
+      if(ba.dataset.ba==="copy"&&m)navigator.clipboard.writeText(m.content).then(()=>toast("Copied"),()=>toast("Copy isn't available here"));
+      else if(ba.dataset.ba==="say"&&m)say(m.content);
+      else if(ba.dataset.ba==="redo"&&!st.busy&&st.msgs.length&&st.msgs[st.msgs.length-1].role==="assistant"){st.msgs.pop();run(tool)}}};
+  $("#pin").onclick=()=>{P.pins=pinned?P.pins.filter(x=>x!==tool.id):[...P.pins,tool.id];saveP();viewTool(tool)};
+  paint(tool)}
+
+function userBubble(m){const c=(m.content||"").replace(/\[Attached file: ([^\]\n]+)\]\n```[\s\S]*?\n```/g,"📎 $1"),im=(m.img||[]).map(u=>`<img class="th2" src="${u}" alt="attachment">`).join("");return `<div class="b u">${im}${esc(c)}</div>`}
+function bubbles(tool,st){
+  let h=`<div class="b a"><div class="prose"><p>${esc(tool.hello||"")}</p></div></div>`;
+  st.msgs.forEach((m,i)=>{h+=m.role==="user"?userBubble(m):`<div class="b a"><div class="prose">${md(m.content)}</div><div class="ba"><button type="button" data-ba="copy" data-i="${i}">Copy</button><button type="button" data-ba="say" data-i="${i}">🔊 Read</button>${i===st.msgs.length-1&&!st.busy?'<button type="button" data-ba="redo">↻ Retry</button>':""}</div></div>`});
+  if(st.busy)h+=`<div class="b a"><div class="prose">${st.text?md(st.text):'<span class="dots"><i></i><i></i><i></i></span>'}</div></div>`;
+  return h+(st.err?`<div class="err">${esc(st.err)}</div>`:"")}
+
+function bodyHtml(tool,st){
+  const err=st.err?`<div class="err">${esc(st.err)}</div>`:"";
+  if(!st.text&&!st.busy)return err+`<div class="empty">Fill in the form and press Run. Your result appears here.</div>`;
+  if(st.busy&&!st.text)return `<div class="empty"><span class="dots"><i></i><i></i><i></i></span></div>`;
+  const tx=st.text;
+  if(tool.k==="svg"){const sv=getSvg(tx);if(sv){st.svg=sv;return err+`<img class="pic" alt="Generated image" src="${svgUrl(sv)}">`}
+    return err+(st.busy?`<div class="empty">Painting…</div>`:`<div class="prose">${md(tx)}</div>`)}
+  if(tool.k==="html"){
+    if(st.busy)return `<div class="empty">Building…</div><div class="stream">${esc(tx.slice(-900))}</div>`;
+    const code=getHtml(tx);if(!code)return err+`<div class="prose">${md(tx)}</div>`;st.html=code;
+    return err+`<div class="tabs"><button class="btn${st.tab==="preview"?" on":""}" data-tab="preview">Preview</button><button class="btn${st.tab==="code"?" on":""}" data-tab="code">Code</button></div>`+
+      (st.tab==="code"?`<div class="prose"><pre><button class="cp" type="button">Copy</button><code>${esc(code)}</code></pre></div>`:`<iframe class="frame" sandbox="allow-scripts allow-forms allow-modals" title="Preview" srcdoc="${esc(code)}"></iframe>`)}
+  if(tool.k==="cards"){
+    if(st.busy)return `<div class="empty">Making cards…</div>`;
+    const c=getCards(tx);st.cards=c;
+    return err+(c&&c.length?`<p style="margin-top:0;color:var(--mute)">Tap a card to flip it.</p><div class="cards">${c.map(x=>`<button class="fc" type="button"><span class="q">${esc(x.q)}</span><span class="a">${esc(x.a)}</span></button>`).join("")}</div>`:`<div class="prose">${md(tx)}</div>`)}
+  return err+`<div class="prose">${md(tx)}</div>`}
+
+function paint(tool){
+  if(viewing!==tool.id)return;const st=S(tool),body=$("#outbody");if(!body)return;
+  const near=innerHeight+scrollY>=document.body.scrollHeight-180,chat=tool.k==="chat";
+  body.innerHTML=chat?bubbles(tool,st):bodyHtml(tool,st);
+  if(st.via&&(st.text||st.msgs.length)){const lt=lastA(st.msgs);body.insertAdjacentHTML("beforeend",`<p class="via">via ${esc(st.via)}${!st.busy&&st.ms&&lt?` · ${(st.ms/1000).toFixed(1)}s · ${words(lt)} words`:""}</p>`)}
+  const run=$("#run");if(run){run.textContent=st.busy?"Stop":chat?"Send":"Run";run.classList.toggle("stop",st.busy)}
+  if(chat){if(near&&st.busy)scrollTo(0,document.body.scrollHeight);return}
+  const bar=$("#outbar");
+  if(st.text&&!st.busy){
+    const dl=tool.k==="svg"&&st.svg?`<button class="btn" data-a="svg" type="button">Download SVG</button><button class="btn" data-a="png" type="button">Download PNG</button>`:tool.k==="html"&&st.html?`<button class="btn" data-a="html" type="button">Download HTML</button>`:`<button class="btn" data-a="md" type="button">Download .md</button>`;
+    bar.innerHTML=`<div class="bar"><button class="btn" data-a="copy" type="button">Copy</button><button class="btn" data-a="say" type="button">🔊 Read</button>${dl}<button class="btn" data-a="again" type="button">Run again</button><button class="btn" data-a="clear" type="button">Clear</button></div>
+      <form class="refine"><input id="rf" placeholder="Ask for a change… e.g. shorter, add more color" aria-label="Ask for a change"><button class="btn pri">Apply</button></form>`
+  }else bar.innerHTML=""}
+
+function action(tool,a){
+  const st=S(tool);
+  if(a==="copy"){const v=tool.k==="svg"?st.svg:tool.k==="html"?st.html:tool.k==="cards"&&st.cards?st.cards.map(c=>c.q+"\n"+c.a).join("\n\n"):st.text;navigator.clipboard.writeText(v).then(()=>toast("Copied"),()=>toast("Copy isn't available here"))}
+  else if(a==="say")say(st.text);
+  else if(a==="again")start(tool);
+  else if(a==="clear"){st.msgs=[];st.text="";st.err="";persist(tool);paint(tool)}
+  else if(a==="svg")saveFile(tool.id+".svg",new Blob([st.svg],{type:"image/svg+xml"}));
+  else if(a==="html")saveFile(tool.id+".html",new Blob([st.html],{type:"text/html"}));
+  else if(a==="md")saveFile(tool.id+".md",new Blob([st.text],{type:"text/markdown"}));
+  else if(a==="png"){const im=new Image();im.onload=()=>{const vb=st.svg.match(/viewBox="[\d.\s-]*?([\d.]+)\s+([\d.]+)"/);const w=vb?+vb[1]:512,h=vb?+vb[2]:512,c=document.createElement("canvas");c.width=w*2;c.height=h*2;c.getContext("2d").drawImage(im,0,0,c.width,c.height);c.toBlob(b=>b?saveFile(tool.id+".png",b):toast("Couldn't make PNG"))};im.onerror=()=>toast("Couldn't make PNG");im.src=svgUrl(st.svg)}}
+
+/* ---------- history ---------- */
+const H={q:""};
+function histList(){const q=H.q.toLowerCase().trim(),L=D.hist.filter(h=>{if(!q)return true;const tl=findTool(h.tool);return (h.title+" "+(tl?tl.n:h.tool)+" "+h.msgs.map(m=>m.content).join(" ")).toLowerCase().includes(q)});
+  $("#hl").innerHTML=L.length?L.map(h=>{const tl=findTool(h.tool);return `<div class="hi"><button class="hopen" data-key="${esc(h.key)}" type="button"><span class="e">${tl?tl.i:"•"}</span><span class="ht"><b>${esc(h.title)}</b><small>${esc(tl?tl.n:h.tool)} · ${new Date(h.ts).toLocaleString()} · ${h.msgs.length} messages</small></span></button><button class="btn" data-del="${esc(h.key)}" type="button" aria-label="Delete">✕</button></div>`}).join(""):`<div class="empty">${D.hist.length?"Nothing matches your search.":"Nothing saved yet. Use any tool and it shows up here."}</div>`}
+function viewHistory(){
+  viewing="history";
+  $("#view").innerHTML=`<div class="thead" data-c="learn"><div class="big">🕘</div><div><h1>History</h1><p>Chats and results saved in this browser.</p></div><span class="sp"></span><button class="btn" id="hx" type="button">Export all</button><button class="btn" id="hc" type="button">Clear</button></div>
+  <input id="hq" class="hs" type="search" placeholder="Search your history…" value="${esc(H.q)}" aria-label="Search history"><div id="hl"></div>`;
+  histList();
+  $("#hq").oninput=e=>{H.q=e.target.value;histList()};
+  $("#hl").onclick=e=>{const o=e.target.closest(".hopen");if(o){openHist(o.dataset.key);return}const d=e.target.closest("[data-del]");if(d){D.hist=D.hist.filter(h=>h.key!==d.dataset.del);saveD();histList()}};
+  $("#hc").onclick=()=>{if(D.hist.length&&confirm("Delete all saved history?")){D.hist=[];D.tools={};Object.keys(M).forEach(k=>delete M[k]);saveD();histList()}};
+  $("#hx").onclick=()=>{if(!D.hist.length){toast("Nothing to export");return}
+    const t=D.hist.map(h=>{const tl=findTool(h.tool);return "# "+h.title+"\n_"+(tl?tl.n:h.tool)+" · "+new Date(h.ts).toLocaleString()+"_\n\n"+h.msgs.map(m=>(m.role==="user"?"**You:** ":"**AI:** ")+m.content).join("\n\n")}).join("\n\n---\n\n");
+    saveFile("switchboard-history.md",new Blob([t],{type:"text/markdown"}))}}
+
+/* ---------- compare ---------- */
+const C={prompt:"",sel:null,ctls:[],busy:false};
+function viewCompare(){
+  viewing="compare";const R=readyList();if(!C.sel)C.sel=R.slice(0,3).map(x=>x.id);
+  $("#view").innerHTML=`<div class="thead" data-c="chat"><div class="big">🆚</div><div><h1>Compare AIs</h1><p>One prompt, several AIs, answers side by side.</p></div></div>
+  <form id="cf" class="form" style="position:static;max-width:720px">
+    <label class="fld"><span>Your prompt</span><textarea id="cp" rows="4" placeholder="Explain recursion to a 10-year-old">${esc(C.prompt)}</textarea></label>
+    <div class="fld"><span>Ask these AIs</span>${R.length?`<div class="chk">${R.map(x=>`<label><input type="checkbox" value="${esc(x.id)}"${C.sel.includes(x.id)?" checked":""}> ${esc(x.n.replace(/ \(.*\)/,""))}<small>${esc(x.model||"")}</small></label>`).join("")}</div>`:`<p class="lede" style="margin:0">Add keys for two or more providers in AI keys to compare them.</p>`}</div>
+    <button class="run" id="crun" style="max-width:220px">Compare</button></form>
+  <div class="cmp" id="cmp"></div>`;
+  $("#cp").oninput=e=>C.prompt=e.target.value;
+  $("#cf").onchange=e=>{if(e.target.type==="checkbox")C.sel=[...document.querySelectorAll("#cf input[type=checkbox]:checked")].map(x=>x.value)};
+  $("#cf").onsubmit=e=>{e.preventDefault();compare()}}
+async function compare(){
+  if(C.busy){C.ctls.forEach(c=>c.abort());return}
+  if(!settled)await SAMPLE_P;
+  const p=C.prompt.trim(),R=readyList();if(!p){toast("Write a prompt first");return}
+  const ids=C.sel.filter(id=>R.some(x=>x.id===id));if(!ids.length){toast("Pick at least one AI");return}
+  C.busy=true;$("#crun").textContent="Stop";C.ctls=[];
+  $("#cmp").innerHTML=ids.map(id=>{const x=R.find(r=>r.id===id);return `<section class="col"><h3>${esc(x.n.replace(/ \(.*\)/,""))}<small>${esc(x.model||"")}</small></h3><div class="prose" id="c-${esc(id)}"><span class="dots"><i></i><i></i><i></i></span></div><p class="via" id="t-${esc(id)}"></p></section>`}).join("");
+  const set=(id,k,h,txt)=>{const e=document.getElementById(k+"-"+id);if(e){if(txt)e.textContent=h;else e.innerHTML=h}};
+  await Promise.all(ids.map(async id=>{
+    const ctl=new AbortController();C.ctls.push(ctl);const t0=performance.now();
+    try{const out=await ask([{role:"user",content:p}],sysFor({sys:BASE},{sys:"",vals:{}}),x=>set(id,"c",md(x)),ctl.signal,2048,id);
+      set(id,"c",md(out));set(id,"t",((performance.now()-t0)/1000).toFixed(1)+"s · "+words(out)+" words",1)}
+    catch(e){if(e.name==="AbortError"||e.code==="cancelled")set(id,"t","Stopped",1);else set(id,"c",`<div class="err">${esc(friendly(e))}</div>`)}
+  }));
+  C.busy=false;const b=$("#crun");if(b)b.textContent="Compare"}
+
+/* ---------- photo generator ---------- */
+const PH={items:[],busy:false,prompt:""};
+function photoOut(){const o=$("#pout");if(!o)return;
+  o.innerHTML=PH.busy?`<div class="empty"><span class="dots"><i></i><i></i><i></i></span><p>Generating… this can take a little while.</p></div>`:PH.items.length?`<div class="pgrid">${PH.items.map((x,i)=>`<figure><img src="${esc(x.src)}" data-alt="${esc(x.alt||"")}" alt="${esc(x.prompt)}"><figcaption>${esc(x.model)}</figcaption><button class="btn" data-dl="${i}" type="button">Download</button> <button class="btn" data-reuse="${i}" type="button">Reuse prompt</button></figure>`).join("")}</div>`:`<div class="empty">Your images appear here. They aren't saved after you close the page, so download the ones you like.</div>`}
+function viewPhoto(){
+  viewing="photo";const R=readyList().filter(x=>x.id!=="claude"&&x.id!=="free"&&x.kind==="oai").concat(EMBED?[]:[{id:"free",n:"Free shared (Pollinations)",model:"flux"}]);const ph=P.photo=P.photo||{};
+  const pid=R.some(x=>x.id===ph.prov)?ph.prov:(R.find(x=>x.id==="openai")||R[0]||{}).id;
+  const mdl=(ph.model&&ph.model[pid])||(pid==="openai"?"gpt-image-1":pid==="free"?"flux":"");
+  $("#view").innerHTML=`<div class="thead" data-c="create"><div class="big">📷</div><div><h1>Photo generator</h1><p>Real images from an image model such as gpt-image-1 or DALL·E.</p></div></div>
+  ${EMBED?`<div class="banner"><span>Photo generation needs an image service, and this hosted page can only reach Claude. Use the GitHub Pages version of Switchboard for photos.</span></div>`:pid==="free"&&R.length===1?`<div class="banner"><span>Using the free shared image service (no key). It can be slow or busy. For better quality add an OpenAI key.</span><button class="btn pri" id="pk" type="button">Add AI keys</button></div>`:""}
+  <div class="work" data-c="create"><form class="form" id="pf">
+   <label class="fld"><span>Describe the image</span><textarea id="pp" rows="5" placeholder="A rainy Tokyo alley at night, neon reflections, cinematic photo">${esc(PH.prompt)}</textarea></label>
+   <label class="fld"><span>Provider</span><select id="ppv">${R.map(x=>`<option value="${esc(x.id)}"${x.id===pid?" selected":""}>${esc(x.n.replace(/ \(.*\)/,""))}</option>`).join("")}</select></label>
+   <label class="fld"><span>Image model</span><input id="pm" list="pml" value="${esc(mdl)}" placeholder="e.g. gpt-image-1"><datalist id="pml"><option value="gpt-image-1"><option value="dall-e-3"><option value="dall-e-2"><option value="flux"><option value="turbo"></datalist></label>
+   <label class="fld"><span>Size</span><input id="ps" list="psl" value="${esc(ph.size||"1024x1024")}"><datalist id="psl"><option value="1024x1024"><option value="1536x1024"><option value="1024x1536"><option value="1792x1024"><option value="1024x1792"></datalist></label>
+   <div class="aux"><button class="run" id="pg">Generate</button><button type="button" class="btn" id="pi">✨ Improve prompt</button></div>
+   <p class="hint">Uses the provider's /images/generations endpoint. If a model is rejected, check the model name and that your account can use it.</p></form>
+   <section class="out"><div id="pout"></div></section></div>`;
+  photoOut();
+  $("#pout").addEventListener("error",e=>{const im=e.target;if(!im||im.tagName!=="IMG")return;if(im.dataset.alt&&!im.dataset.tried){im.dataset.tried=1;im.src=im.dataset.alt}else{im.replaceWith(Object.assign(document.createElement("p"),{className:"hint",textContent:"This image didn't load. The free service may be busy. Try again."}))}},true);
+  const pk=$("#pk");if(pk)pk.onclick=()=>openSettings();
+  $("#pp").oninput=e=>PH.prompt=e.target.value;
+  $("#ppv").onchange=e=>{ph.prov=e.target.value;const m=(ph.model&&ph.model[ph.prov])||(ph.prov==="openai"?"gpt-image-1":ph.prov==="free"?"flux":"");$("#pm").value=m;saveP()};
+  $("#pf").onsubmit=e=>{e.preventDefault();photoGen()};
+  $("#pi").onclick=async()=>{const p=$("#pp").value.trim();if(!p){toast("Write a rough idea first");return}
+    if(!settled)await SAMPLE_P;if(!hasAI()){toast("Add an AI key first");return}
+    const b=$("#pi");b.disabled=true;b.textContent="Improving…";
+    try{const out=await ask([{role:"user",content:p}],"Rewrite the user's rough idea as one vivid, detailed prompt for an image generator: subject, setting, lighting, lens or style, mood, colors. Reply with the prompt only.",()=>{},undefined,500);$("#pp").value=PH.prompt=out.trim()}
+    catch(er){toast(friendly(er))}b.disabled=false;b.textContent="✨ Improve prompt"};
+  $("#pout").onclick=async e=>{const d=e.target.closest("[data-dl]"),r=e.target.closest("[data-reuse]");
+    if(d){const it=PH.items[+d.dataset.dl];try{saveFile("photo-"+(+d.dataset.dl+1)+".png",await (await fetch(it.src)).blob())}catch(er){if(it.src.startsWith("data:"))toast("Couldn't save the image");else window.open(it.src,"_blank","noopener")}}
+    if(r){const it=PH.items[+r.dataset.reuse];$("#pp").value=PH.prompt=it.prompt}}}
+async function photoGen(){
+  if(PH.busy)return;const p=$("#pp").value.trim(),pid=$("#ppv")&&$("#ppv").value,model=$("#pm").value.trim(),size=$("#ps").value.trim()||"1024x1024";
+  if(!p){toast("Describe the image first");return}if(!pid){toast("Add a provider with image models in AI keys");return}if(!model){toast("Enter an image model name");return}
+  if(pid==="free"){const ph=P.photo;ph.prov=pid;ph.size=size;ph.model=Object.assign(ph.model||{},{[pid]:model});saveP();
+    const [w,h]=size.split("x").map(Number),q=`width=${w||1024}&height=${h||1024}&model=${encodeURIComponent(model)}&nologo=true&seed=${Math.floor(Math.random()*1e6)}`;
+    PH.items.unshift({src:`https://image.pollinations.ai/prompt/${encodeURIComponent(p)}?${q}`,alt:`https://gen.pollinations.ai/image/${encodeURIComponent(p)}?${q}`,prompt:p,model:"Pollinations · "+model});photoOut();return}
+  const c=cfg(pid),ph=P.photo;ph.prov=pid;ph.size=size;ph.model=Object.assign(ph.model||{},{[pid]:model});saveP();
+  PH.busy=true;photoOut();
+  try{const body={model,prompt:p,n:1,size};if(/^dall-e/.test(model))body.response_format="b64_json";
+    const h={"content-type":"application/json"};if(c.key)h.authorization="Bearer "+c.key;
+    const res=await fetch(trim(c.base)+"/images/generations",{method:"POST",headers:h,body:JSON.stringify(body)});
+    if(!res.ok)throw await hdrErr(res);const j=await res.json(),it=j.data&&j.data[0];
+    if(!it)throw new Error("No image came back.");
+    PH.items.unshift({src:it.b64_json?"data:image/png;base64,"+it.b64_json:it.url,prompt:p,model:c.n.replace(/ \(.*\)/,"")+" · "+model})}
+  catch(e){e.prov=cfg(pid).n;toast(friendly(e))}
+  PH.busy=false;photoOut()}
+
+/* ---------- builder ---------- */
+const EXAMPLES=[
+ {n:"Pirate translator",i:"🏴‍☠️",d:"Rewrites any text in pirate speak.",k:"text",sys:"Rewrite the user's text in lively pirate speak. Keep the meaning and stay family-friendly.",label:"Text",ph:"Hello, how are you today?"},
+ {n:"Tough-love editor",i:"✂️",d:"Blunt feedback on your writing.",k:"chat",sys:"You are a blunt but fair editor. Cut fluff, flag weak sentences, and always explain the fix. Keep replies short.",hello:"Paste a paragraph and I'll tear it apart (nicely)."},
+ {n:"Fridge detective",i:"🧊",d:"Dinner ideas from leftovers.",k:"text",sys:"You suggest 3 dinner ideas from the ingredients given, ranked by effort, with a 3-step method each.",label:"What's in your fridge?",ph:"Half a cabbage, eggs, rice, soy sauce"}];
+function viewBuilder(id){
+  const u=id?P.mine.find(x=>x.id===id):null;viewing=id?"edit":"new";
+  const d=u||{k:"text",i:"✨",n:"",d:"",sys:"",label:"Your input",ph:"",hello:"Hi! What would you like to do?"};
+  $("#view").innerHTML=`<div class="thead" data-c="mine"><div class="big">${u?esc(d.i):"➕"}</div><div><h1>${u?"Edit tool":"Make your own AI"}</h1><p>Give it a job and instructions. It shows up in the sidebar and works with any provider.</p></div></div>
+  ${u?"":`<div class="chips" id="exs">${EXAMPLES.map((x,i)=>`<button class="chip" data-ex="${i}" type="button">${x.i} ${esc(x.n)}</button>`).join("")}<button class="chip" id="bimp" type="button">⬆ Import JSON</button><input type="file" id="bfile" hidden accept="application/json,.json"></div>`}
+  <form class="bld" id="bf">
+   <div class="aux"><label class="fld" style="width:90px"><span>Icon</span><input id="bi" value="${esc(d.i)}" maxlength="4"></label><label class="fld" style="flex:1;min-width:180px"><span>Name</span><input id="bn" value="${esc(d.n)}" placeholder="Pirate translator" required></label></div>
+   <label class="fld"><span>Short description</span><input id="bd" value="${esc(d.d)}" placeholder="What it does in one line"></label>
+   <label class="fld"><span>Type</span><select id="bk"><option value="text"${d.k==="text"?" selected":""}>One-shot: type something, get an answer</option><option value="chat"${d.k==="chat"?" selected":""}>Chat: a back-and-forth conversation</option></select></label>
+   <label class="fld"><span>Instructions (what the AI should do and how)</span><textarea id="bs" rows="7" placeholder="You are a… Always… Never…" required>${esc(d.sys)}</textarea></label>
+   <div id="b1" ${d.k==="chat"?"hidden":""}><label class="fld"><span>Input box label</span><input id="bl" value="${esc(d.label||"")}" placeholder="Your input"></label><label class="fld" style="margin-top:12px"><span>Input placeholder</span><input id="bp" value="${esc(d.ph||"")}" placeholder="Example text shown in the box"></label></div>
+   <div id="b2" ${d.k==="chat"?"":"hidden"}><label class="fld"><span>Opening message</span><input id="bh" value="${esc(d.hello||"")}" placeholder="Hi! What would you like to do?"></label></div>
+   <div class="aux"><button class="run" type="submit">${u?"Save changes":"Create tool"}</button>${u?`<button class="btn" id="bx" type="button">Export JSON</button><button class="btn" id="bdel" type="button">Delete</button>`:""}</div></form>`;
+  const fillF=x=>{$("#bi").value=x.i||"✨";$("#bn").value=x.n||"";$("#bd").value=x.d||"";$("#bk").value=x.k==="chat"?"chat":"text";$("#bs").value=x.sys||"";$("#bl").value=x.label||"";$("#bp").value=x.ph||"";$("#bh").value=x.hello||"";$("#bk").onchange()};
+  $("#bk").onchange=()=>{const c=$("#bk").value==="chat";$("#b1").hidden=c;$("#b2").hidden=!c};
+  const exs=$("#exs");if(exs){exs.onclick=e=>{const b=e.target.closest("[data-ex]");if(b)fillF(EXAMPLES[+b.dataset.ex]);if(e.target.id==="bimp")$("#bfile").click()};
+    $("#bfile").onchange=async e=>{try{const j=JSON.parse(await readText(e.target.files[0]));if(!j.n||!j.sys)throw 0;fillF(j);toast("Imported. Review it, then create.")}catch(er){toast("That isn't a Switchboard tool file")}e.target.value=""}}
+  $("#bf").onsubmit=e=>{e.preventDefault();
+    const o={id:u?u.id:"u_"+Date.now().toString(36),i:$("#bi").value.trim()||"✨",n:$("#bn").value.trim(),d:$("#bd").value.trim(),k:$("#bk").value,sys:$("#bs").value.trim(),label:$("#bl").value.trim(),ph:$("#bp").value.trim(),hello:$("#bh").value.trim()};
+    if(!o.n||!o.sys){toast("Add a name and instructions");return}
+    if(u)P.mine=P.mine.map(x=>x.id===u.id?o:x);else P.mine.push(o);
+    saveP();buildNav($("#q").value);location.hash="#/"+o.id;toast(u?"Saved":"Tool created")};
+  const bx=$("#bx");if(bx)bx.onclick=()=>saveFile((u.n||"tool").toLowerCase().replace(/\W+/g,"-")+".json",new Blob([JSON.stringify(u,null,2)],{type:"application/json"}));
+  const bdel=$("#bdel");if(bdel)bdel.onclick=()=>{if(confirm("Delete this tool?")){P.mine=P.mine.filter(x=>x.id!==u.id);delete D.tools[u.id];P.pins=P.pins.filter(x=>x!==u.id);saveP();saveD();buildNav($("#q").value);location.hash="#/"}}}
+
+/* ---------- command palette ---------- */
+const pal={i:0,items:[]};
+function palItems(q){q=q.toLowerCase().trim();
+  const base=PAGES.map(p=>({...p,href:"#/"+p.id})).concat([{id:"settings",i:"🔑",n:"AI keys and settings",d:"Providers, preferences, data",act:()=>openSettings()}],allTools().map(x=>({id:x.id,i:x.i,n:x.n,d:x.d,href:"#/"+x.id})));
+  return q?base.filter(x=>(x.n+" "+x.d+" "+x.id).toLowerCase().includes(q)):base}
+function palRender(){pal.items=palItems($("#pq").value).slice(0,40);if(pal.i>=pal.items.length)pal.i=pal.items.length-1;if(pal.i<0)pal.i=0;
+  $("#pl").innerHTML=pal.items.map((x,i)=>`<a class="pi${i===pal.i?" on":""}" data-i="${i}" href="${x.href||"#"}"><span class="e">${x.i}</span><b>${esc(x.n)}</b><small>${esc(x.d||"")}</small></a>`).join("")||`<p class="hint" style="padding:12px">No matches.</p>`;
+  const on=$("#pl .on");if(on&&on.scrollIntoView)on.scrollIntoView({block:"nearest"})}
+function palGo(x){if(!x)return;$("#pal").close();if(x.act)x.act();else location.hash=x.href}
+function openPal(){pal.i=0;$("#pal").showModal();$("#pq").value="";palRender();$("#pq").focus()}
+$("#pq").oninput=()=>{pal.i=0;palRender()};
+$("#pq").onkeydown=e=>{if(e.key==="ArrowDown"){e.preventDefault();pal.i=Math.min(pal.i+1,pal.items.length-1);palRender()}else if(e.key==="ArrowUp"){e.preventDefault();pal.i=Math.max(pal.i-1,0);palRender()}else if(e.key==="Enter"){e.preventDefault();palGo(pal.items[pal.i])}};
+$("#pl").onclick=e=>{const a=e.target.closest(".pi");if(a){e.preventDefault();palGo(pal.items[+a.dataset.i])}};
+$("#pal").onclick=e=>{if(e.target.id==="pal")$("#pal").close()};
+$("#palBtn").onclick=openPal;
+
+/* ---------- shell ---------- */
+function buildNav(q=""){
+  q=q.toLowerCase().trim();
+  const pg=PAGES.filter(p=>!q||(p.n+" "+p.d).toLowerCase().includes(q)).map(p=>`<a data-c="${p.c}" data-id="${p.id}" href="#/${p.id}"><span class="e">${p.i}</span>${esc(p.n)}</a>`).join("");
+  const cats=CATS2().map(([c,n])=>{const L=allTools().filter(x=>x.c===c&&(!q||(x.n+" "+x.d+" "+c).toLowerCase().includes(q)));
+    return L.length?`<div data-c="${c}"><div class="gl"><i></i>${n}</div>${L.map(x=>`<a data-c="${c}" data-id="${x.id}" href="#/${x.id}"><span class="e">${x.i}</span>${esc(x.n)}</a>`).join("")}</div>`:""}).join("");
+  $("#nav").innerHTML=(pg?`<div>${pg}</div>`:"")+cats||`<p class="lede" style="padding:0 6px;font-size:.9rem">No tools match.</p>`;
+  mark()}
+function mark(){document.querySelectorAll("#nav a").forEach(a=>a.classList.toggle("on",a.dataset.id===viewing))}
+function route(){
+  const h=decodeURIComponent((location.hash.match(/^#\/(.*)/)||[])[1]||""),names={compare:"Compare AIs",photo:"Photo generator",history:"History",new:"Make your own AI"};
+  let tool=null;viewing="";
+  if(h==="compare")viewCompare();else if(h==="photo")viewPhoto();else if(h==="history")viewHistory();else if(h==="new")viewBuilder();
+  else if(h.startsWith("edit/")&&P.mine.some(x=>x.id===h.slice(5)))viewBuilder(h.slice(5));
+  else if((tool=findTool(h)))viewTool(tool);else viewHome();
+  mark();document.body.classList.remove("nav");scrollTo(0,0);
+  document.title=tool?tool.n+" · Switchboard":names[h]?names[h]+" · Switchboard":"Switchboard — AI tools for any AI";
+  $("#setBtn").textContent=btnLabel()}
+
+/* ---------- settings ---------- */
+function renderPlist(openId){
+  let h=(EMBED?`<p class="hint" style="border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 10px"><b>Heads up:</b> this hosted page can only talk to Claude. Keys you add here are saved, but other providers only work in the GitHub Pages and iPhone versions. Use <b>Your data → Export backup</b> (tick "Include API keys") to move them there.</p>`:"")+`<details class="pv"><summary>Preferences</summary><div class="pf">
+    <label class="fld"><span>About you (added to every AI's instructions)</span><textarea data-g="about" rows="3" placeholder="I'm a nurse in Utrecht. Keep answers short. Use metric units.">${esc(P.about||"")}</textarea></label>
+    <label class="fld"><span>Creativity: <b id="tv">${P.temp==null?"provider default":P.temp}</b></span><input type="range" min="0" max="1" step="0.1" data-g="temp" value="${P.temp==null?0.7:P.temp}" ${P.temp==null?"disabled":""}></label>
+    <label class="chk1"><input type="checkbox" data-g="tempdef"${P.temp==null?" checked":""}> Use each provider's default creativity</label></div></details>`;
+  const FREEOPT=[["groq","Very fast open models. Free tier with daily limits."],["gemini","Google's Gemini models. Free tier in AI Studio."],["openrouter","One key, many models. Choose ones ending in :free."],["cerebras","Fast open models. Free tier."],["mistral","Free tier for experimenting."],["ollama","Runs on your own computer. Free, no account."]];
+  h+=`<details class="pv"${openId==="__free"?" open":""}><summary>Get a free key (about a minute)</summary><div class="pf"><p class="hint" style="margin:0">Until you add a key, Switchboard uses a free shared service. These providers offer free tiers you can use with your own key. Limits change, so check each site.</p>${FREEOPT.map(([id,t])=>{const d=PROV.find(p=>p.id===id);return `<div class="fo"><div><b>${esc(d.n.replace(/ \(.*\)/,""))}</b><br><small>${esc(t)}</small></div><div class="aux"><a class="btn" href="${esc(d.url)}" target="_blank" rel="noopener">Get key</a><button class="btn" type="button" data-a="goto" data-p="${id}">Set up</button></div></div>`}).join("")}</div></details>`;
+  const rl=readyList();
+  if(SAMPLE)h+=`<details class="pv" open><summary><span class="dot on"></span>Claude (built in)<small>no key needed</small></summary><div class="pf"><label class="fld"><span>Quality</span><select id="tier"><option value="quick">Fast</option><option value="default">Balanced</option><option value="complex">Best</option></select></label></div></details>`;
+  ALL().forEach(d=>{const c=cfg(d.id),sv=P.prov[d.id]||{};
+    h+=`<details class="pv" data-p="${esc(d.id)}"${d.id===openId?" open":""}><summary><span class="dot${rl.some(x=>x.id===d.id)?" on":""}"></span>${esc(c.n)}<small>${esc(sv.model||d.model||"")}</small></summary><div class="pf">
+    ${d.custom?`<label class="fld"><span>Name</span><input data-f="n" value="${esc(c.n)}"></label>`:""}
+    ${d.nokey&&!d.custom?`<label class="chk1"><input type="checkbox" data-f="on"${c.on?" checked":""}> Use ${esc(c.n)}</label>`:""}
+    <label class="fld"><span>Endpoint URL</span><input data-f="base" value="${esc(c.base)}" placeholder="https://your-endpoint.com/v1" autocomplete="off"></label>
+    <label class="fld"><span>API key${d.nokey?" (optional)":""}</span><input type="password" data-f="key" value="${esc(c.key)}" autocomplete="off" placeholder="${d.nokey?"leave blank if none":"paste key"}"></label>
+    <label class="fld"><span>Model</span><input data-f="model" list="ml-${esc(d.id)}" value="${esc(sv.model||"")}" placeholder="${esc(d.model||"model name")}" autocomplete="off"><datalist id="ml-${esc(d.id)}"></datalist></label>
+    <div class="row" style="justify-content:flex-start">${d.nolist?"":`<button class="btn" type="button" data-a="models">Fetch models</button>`}${d.url&&!d.custom?`<a class="btn" href="${esc(d.url)}" target="_blank" rel="noopener">Get a key</a>`:""}${d.custom?`<button class="btn" type="button" data-a="del">Remove</button>`:""}</div></div></details>`});
+  h+=`<details class="pv"><summary>Your data</summary><div class="pf"><p class="hint" style="margin:0">History, chats, custom tools and settings live only in this browser. Back them up before clearing your browser data.</p>
+    <label class="chk1"><input type="checkbox" id="exkeys"> Include API keys in the backup</label>
+    <div class="row" style="justify-content:flex-start"><button class="btn" type="button" data-a="export">Export backup</button><button class="btn" type="button" data-a="import">Import backup</button><button class="btn" type="button" data-a="clearh">Clear history</button><button class="btn" type="button" data-a="wipe">Delete everything</button></div><input type="file" id="bkf" hidden accept="application/json,.json"></div></details>`;
+  $("#plist").innerHTML=h;const t=$("#tier");if(t)t.value=P.tier||"default"}
+function collect(){
+  document.querySelectorAll("#plist details[data-p]").forEach(el=>{
+    const id=el.dataset.p,d=ALL().find(x=>x.id===id),v={};
+    el.querySelectorAll("[data-f]").forEach(i=>v[i.dataset.f]=i.type==="checkbox"?i.checked:i.value.trim());
+    const s={key:v.key||"",model:v.model||"",on:!!v.on};
+    if(v.base&&v.base!==d.base)s.base=v.base;
+    P.prov[id]=s;
+    if(d.custom){const c=P.custom.find(x=>x.id===id);if(c&&v.n)c.n=v.n}});
+  const t=$("#tier");if(t)P.tier=t.value;
+  const ab=document.querySelector("[data-g=about]");if(ab)P.about=ab.value.trim();
+  const td=document.querySelector("[data-g=tempdef]"),tr=document.querySelector("[data-g=temp]");if(td&&tr)P.temp=td.checked?null:+tr.value}
+function openSettings(openId){renderPlist(typeof openId==="string"?openId:"");$("#dlg").showModal()}
+$("#setBtn").onclick=()=>openSettings();$("#cancel").onclick=()=>$("#dlg").close();
+$("#addC").onclick=()=>{collect();const id="c"+Date.now().toString(36);P.custom.push({id,n:"Custom endpoint"});P.prov[id]={};renderPlist(id)};
+$("#plist").oninput=e=>{const g=e.target.dataset&&e.target.dataset.g;
+  if(g==="temp")$("#tv").textContent=e.target.value;
+  if(g==="tempdef"){const r=document.querySelector("[data-g=temp]");r.disabled=e.target.checked;$("#tv").textContent=e.target.checked?"provider default":r.value}};
+$("#plist").onclick=async e=>{
+  const b=e.target.closest("[data-a]");if(!b)return;const a=b.dataset.a;
+  if(a==="export"){collect();const keep=$("#exkeys").checked,pp=JSON.parse(JSON.stringify(P));if(!keep)Object.values(pp.prov).forEach(x=>{delete x.key});
+    saveFile("switchboard-backup.json",new Blob([JSON.stringify({v:2,P:pp,D},null,1)],{type:"application/json"}));return}
+  if(a==="import"){$("#bkf").click();return}
+  if(a==="clearh"){if(confirm("Delete all saved history and chats?")){D={hist:[],tools:{}};Object.keys(M).forEach(k=>delete M[k]);saveD();toast("History cleared")}return}
+  if(a==="wipe"){if(confirm("Delete ALL data in this browser, including keys and custom tools?")){try{localStorage.removeItem("sb:v1");localStorage.removeItem("sb:data")}catch(er){}location.reload()}return}
+  if(a==="goto"){collect();renderPlist(b.dataset.p);const t=document.querySelector(`#plist details[data-p="${b.dataset.p}"]`);if(t&&t.scrollIntoView)t.scrollIntoView({block:"nearest"});return}
+  const el=b.closest("details"),id=el&&el.dataset.p;
+  if(a==="del"){collect();P.custom=P.custom.filter(x=>x.id!==id);delete P.prov[id];renderPlist();return}
+  if(a==="models"){
+    const get=f=>(el.querySelector(`[data-f=${f}]`)||{}).value||"",c=cfg(id);
+    const cc=Object.assign({},c,{key:get("key").trim(),base:get("base").trim()||c.base});
+    b.disabled=true;b.textContent="Loading…";
+    try{const L=await listModels(cc);el.querySelector("datalist").innerHTML=L.map(m=>`<option value="${esc(m)}">`).join("");toast(L.length+" models found. Tap the Model field to choose.")}
+    catch(er){er.prov=c.n;toast(friendly(er))}
+    b.disabled=false;b.textContent="Fetch models"}};
+document.addEventListener("change",async e=>{if(e.target.id!=="bkf")return;
+  try{const j=JSON.parse(await readText(e.target.files[0]));if(!j.P&&!j.D)throw 0;
+    if(j.P){const keepKeys={};Object.entries(P.prov).forEach(([k,v])=>{if(v.key)keepKeys[k]=v.key});Object.assign(P,j.P);Object.entries(P.prov||{}).forEach(([k,v])=>{if(!v.key&&keepKeys[k])v.key=keepKeys[k]});saveP()}
+    if(j.D){D=Object.assign({hist:[],tools:{}},j.D);Object.keys(M).forEach(k=>delete M[k]);saveD()}
+    syncProv();buildNav();renderPlist();toast("Backup imported")}catch(er){toast("That isn't a valid backup file")}e.target.value=""});
+$("#saveSet").onclick=()=>{collect();saveP();$("#dlg").close();syncProv();toast("Saved");route()};
+$("#prov").onchange=e=>{P.active=e.target.value;saveP()};
+$("#theme").onclick=()=>{const dark=getComputedStyle(document.documentElement).getPropertyValue("--bg").trim()==="#0e1016";P.theme=dark?"light":"dark";document.documentElement.dataset.theme=P.theme;saveP()};
+$("#burger").onclick=()=>document.body.classList.add("nav");$("#scrim").onclick=()=>document.body.classList.remove("nav");
+$("#q").oninput=e=>buildNav(e.target.value);
+$("#q").onkeydown=e=>{if(e.key==="Enter"){const a=document.querySelector("#nav a");if(a){location.hash=a.getAttribute("href");e.target.blur()}}};
+document.addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openPal();return}
+  if(e.key==="/"&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){e.preventDefault();document.body.classList.add("nav");$("#q").focus()}});
+document.addEventListener("click",e=>{const cp=e.target.closest(".cp");if(cp&&!cp.closest("#outbody")){const code=cp.parentElement.querySelector("code");navigator.clipboard.writeText(code.textContent).then(()=>{cp.textContent="Copied";setTimeout(()=>cp.textContent="Copy",1200)},()=>{})}});
+let dip;addEventListener("beforeinstallprompt",e=>{e.preventDefault();dip=e;$("#install").hidden=false});
+$("#install").onclick=async()=>{if(!dip)return;dip.prompt();try{await dip.userChoice}catch(e){}dip=null;$("#install").hidden=true};
+addEventListener("hashchange",route);
+if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol)&&!window.claude){navigator.serviceWorker.register("sw.js").catch(()=>{})}
+buildNav();route();syncProv();
+</script>
+</body>
+</html>
